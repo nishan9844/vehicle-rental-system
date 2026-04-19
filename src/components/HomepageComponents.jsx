@@ -1,5 +1,7 @@
+import React, { useState, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight, FaStar, FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 // Import images from assets
 import heroSection from "../assets/images/HeroSection.png";
@@ -96,6 +98,24 @@ export function VehicleCategories() {
 }
 
 export function TopChoice() {
+    const [topVehicles, setTopVehicles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTopVehicles = async () => {
+            const { data, error } = await supabase
+                .from('vehicles')
+                .select('*')
+                .limit(3);
+                
+            if (!error && data) {
+                setTopVehicles(data);
+            }
+            setLoading(false);
+        };
+        fetchTopVehicles();
+    }, []);
+
     return (
         <section className="topchoice">
             <div className="container">
@@ -112,63 +132,33 @@ export function TopChoice() {
                     </div>
                 </div>
                 <div className="car-grid">
-                    <div className="car-card">
-                        <div className="car-img" style={{ height: "200px", overflow: "hidden" }}>
-                            <img src={teslaImg} alt="Tesla Model S" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        </div>
-                        <div className="car-info">
-                            <h3>Tesla Model S</h3>
-                            <div className="car-meta">
-                                <span>Electric</span>
-                                <span>5 Seats</span>
+                    {loading ? (
+                        <p>Loading top choices...</p>
+                    ) : topVehicles.length === 0 ? (
+                        <p>No top vehicles available at the moment.</p>
+                    ) : (
+                        topVehicles.map((vehicle) => (
+                            <div className="car-card" key={vehicle.id}>
+                                <div className="car-img" style={{ height: "200px", overflow: "hidden" }}>
+                                    <img src={vehicle.image_url || teslaImg} alt={vehicle.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                </div>
+                                <div className="car-info">
+                                    <h3>{vehicle.name}</h3>
+                                    <div className="car-meta">
+                                        <span>{vehicle.fuel_type || 'N/A'}</span>
+                                        <span>{vehicle.seats ? `${vehicle.seats} Seats` : 'N/A'}</span>
+                                    </div>
+                                    <div className="price-row">
+                                        <span className="price">NPR {vehicle.price_per_day}</span>
+                                        <span className="daily">DAILY</span>
+                                    </div>
+                                    <Link to={`/details/${vehicle.id}`}>
+                                        <button className="details-btn">View Details</button>
+                                    </Link>
+                                </div>
                             </div>
-                            <div className="price-row">
-                                <span className="price">NPR 149</span>
-                                <span className="daily">DAILY</span>
-                            </div>
-                            <Link to="/details">
-                                <button className="details-btn">View Details</button>
-                            </Link>
-                        </div>
-                    </div>
-                    <div className="car-card">
-                        <div className="car-img" style={{ height: "200px", overflow: "hidden" }}>
-                            <img src={bikeImg} alt="Bullet Bike" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        </div>
-                        <div className="car-info">
-                            <h3>Bullet Bike</h3>
-                            <div className="car-meta">
-                                <span>Petrol</span>
-                                <span>Manual</span>
-                            </div>
-                            <div className="price-row">
-                                <span className="price">NPR 89</span>
-                                <span className="daily">DAILY</span>
-                            </div>
-                            <Link to="/details">
-                                <button className="details-btn">View Details</button>
-                            </Link>
-                        </div>
-                    </div>
-                    <div className="car-card">
-                        <div className="car-img" style={{ height: "200px", overflow: "hidden" }}>
-                            <img src={bmwImg} alt="BMW X7 M-Sport" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        </div>
-                        <div className="car-info">
-                            <h3>BMW X7 M-Sport</h3>
-                            <div className="car-meta">
-                                <span>Hybrid</span>
-                                <span>7 Seats</span>
-                            </div>
-                            <div className="price-row">
-                                <span className="price">NPR 199</span>
-                                <span className="daily">DAILY</span>
-                            </div>
-                            <Link to="/details">
-                                <button className="details-btn">View Details</button>
-                            </Link>
-                        </div>
-                    </div>
+                        ))
+                    )}
                 </div>
             </div>
         </section>

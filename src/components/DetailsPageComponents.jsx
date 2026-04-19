@@ -8,23 +8,21 @@ import { Link } from "react-router-dom";
 // Import images
 import teslaImg from "../assets/images/tesla_model_s_1774791127857.png";
 
-export function DetailsHero() {
+export function DetailsHero({ vehicle }) {
     return (
         <section className="details-hero">
             <div className="container">
                 <div className="breadcrumb">
-                    <Link to="/listing">Vehicles</Link> / <span>Tesla Model S</span>
+                    <Link to="/listing">Vehicles</Link> / <span>{vehicle?.name}</span>
                 </div>
                 
                 <div className="details-layout">
                     <div className="details-gallery">
                         <div className="gallery-main">
-                            <img src={teslaImg} alt="Tesla Model S" />
+                            <img src={vehicle?.image_url || teslaImg} alt={vehicle?.name} />
                         </div>
                         <div className="gallery-thumbs">
-                            <div className="thumb active"><img src={teslaImg} /></div>
-                            <div className="thumb"><img src={teslaImg} /></div>
-                            <div className="thumb"><img src={teslaImg} /></div>
+                            <div className="thumb active"><img src={vehicle?.image_url || teslaImg} alt="thumb" /></div>
                         </div>
                     </div>
 
@@ -33,40 +31,40 @@ export function DetailsHero() {
                             <div className="fleet-tag" style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "12px" }}>
                                 <LuStar style={{ width: "14px", fill: "currentColor" }} /> TOP RATED FLEET
                             </div>
-                            <h1 className="vehicle-title">Velocity Sapphire EV</h1>
+                            <h1 className="vehicle-title">{vehicle?.name}</h1>
                             <div className="vehicle-price">
-                                <span className="price-amount">NPR 499</span>
+                                <span className="price-amount">NPR {vehicle?.price_per_day}</span>
                                 <span className="price-suffix">/ day</span>
                             </div>
                         </div>
 
                         <div className="specs-grid">
                             <div className="spec-card">
-                                <div className="spec-icon"><LuBattery /></div>
+                                <div className="spec-icon"><LuZap /></div>
                                 <div className="spec-info">
-                                    <span className="spec-label">Range</span>
-                                    <span className="spec-value">520 mi</span>
+                                    <span className="spec-label">Fuel Type</span>
+                                    <span className="spec-value">{vehicle?.fuel_type || "N/A"}</span>
                                 </div>
                             </div>
                             <div className="spec-card">
                                 <div className="spec-icon"><LuUsers /></div>
                                 <div className="spec-info">
                                     <span className="spec-label">Seats</span>
-                                    <span className="spec-value">4 Adults</span>
+                                    <span className="spec-value">{vehicle?.seats ? `${vehicle.seats} Adults` : "N/A"}</span>
                                 </div>
                             </div>
                             <div className="spec-card">
                                 <div className="spec-icon"><LuTimer /></div>
                                 <div className="spec-info">
-                                    <span className="spec-label">0-60 mph</span>
-                                    <span className="spec-value">2.1s</span>
+                                    <span className="spec-label">Transmission</span>
+                                    <span className="spec-value">{vehicle?.transmission || "N/A"}</span>
                                 </div>
                             </div>
                             <div className="spec-card">
-                                <div className="spec-icon"><LuZap /></div>
+                                <div className="spec-icon"><LuBattery /></div>
                                 <div className="spec-info">
-                                    <span className="spec-label">Drivetrain</span>
-                                    <span className="spec-value">AWD Dual</span>
+                                    <span className="spec-label">Category</span>
+                                    <span className="spec-value">{vehicle?.category || "N/A"}</span>
                                 </div>
                             </div>
                         </div>
@@ -77,17 +75,14 @@ export function DetailsHero() {
     );
 }
 
-export function DetailsContent() {
+export function DetailsContent({ vehicle }) {
     return (
         <div className="details-content-layout container">
             <div className="details-main-text">
                 <section className="info-section">
-                    <h2>Mastery in Motion</h2>
+                    <h2>{vehicle?.name}</h2>
                     <p>
-                        The Azure Velocity Sapphire Edition redefines the electric grand touring experience. 
-                        Engineered with a triple-motor powertrain, it delivers instantaneous torque and unparalleled precision. 
-                        The cabin is a sanctuary of sustainable luxury, featuring recycled ocean plastic textiles 
-                        and ethically sourced open-pore wood.
+                        {vehicle?.description}
                     </p>
                 </section>
 
@@ -189,7 +184,7 @@ export function DetailsContent() {
                         </div>
                     </div>
 
-                    <Link to="/booking" className="btn-book-now">Book Now</Link>
+                    <Link to={vehicle ? `/booking/${vehicle.id}` : "/booking"} className="btn-book-now">Book Now</Link>
                     <p className="text-center text-muted" style={{ fontSize: "12px", marginTop: "16px" }}>
                         No commitment required until confirmation
                     </p>
