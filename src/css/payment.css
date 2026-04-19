@@ -1,0 +1,304 @@
+/* 
+  DESIGN SYSTEM TOKENS - PAYMENT PAGE 
+*/
+:root {
+  --payment-text-charcoal: #191C1E;
+  --payment-text-dark-gray: #414751;
+  --payment-text-medium-gray: #6B7280;
+  --payment-brand-blue: #005DA7;
+  --payment-security-teal: #006875;
+  --payment-cta-blue: #2563EB;
+  --payment-bg-page: #F7F9FB;
+  --payment-bg-card: #FFFFFF;
+  --payment-bg-field: #E0E3E5;
+}
+
+body {
+  background-color: var(--payment-bg-page);
+  color: var(--payment-text-charcoal);
+  font-family: 'Inter', sans-serif;
+}
+
+.payment-layout {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+  margin-bottom: 100px;
+}
+
+.payment-main {
+  flex: 1.8;
+}
+
+.payment-sidebar {
+  flex: 1.2;
+}
+
+.payment-card {
+  background: var(--payment-bg-card);
+  border-radius: 28px;
+  padding: 40px;
+  /* box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02); */
+  border: 1px solid var(--payment-bg-field);
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800; /* Extra Bold */
+  font-size: 40px;
+  color: var(--payment-text-charcoal);
+  margin-bottom: 12px;
+}
+
+.description-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400; /* Regular body text */
+  font-size: 16px;
+  color: var(--payment-text-dark-gray);
+  line-height: 1.6;
+}
+
+.encrypted-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--payment-security-teal);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700; /* Bold technical labels */
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+.vehicle-name {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800; /* Extra Bold */
+  font-size: 24px;
+  color: var(--payment-text-charcoal);
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700; /* Bold headers */
+  font-size: 22px;
+  margin-bottom: 24px;
+  color: var(--payment-text-charcoal);
+}
+
+/* Payment Methods */
+.method-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 24px;
+  border-radius: 16px;
+  border: 1.5px solid var(--payment-bg-field);
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.method-option.active {
+    border-color: var(--payment-brand-blue);
+    background-color: #F0F9FF;
+}
+
+.option-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500; /* Medium selectable options */
+    font-size: 16px;
+    color: var(--payment-text-charcoal);
+    flex: 1;
+}
+
+/* Form Groups */
+.form-group label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; /* Bold technical labels */
+  font-size: 12px;
+  color: var(--payment-text-dark-gray);
+  display: block;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--payment-bg-field);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500; /* Medium for user text */
+  font-size: 15px;
+  color: var(--payment-text-charcoal);
+  outline: none;
+}
+
+.form-control::placeholder {
+    color: var(--payment-text-medium-gray);
+    font-weight: 400; /* Regular for placeholders */
+}
+
+/* Summary Box */
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  font-family: 'Inter', sans-serif;
+}
+
+.summary-label {
+  font-weight: 400; /* Regular subtotal labels */
+  color: var(--payment-text-dark-gray);
+  font-size: 14px;
+}
+
+.summary-value {
+    font-weight: 600; /* Semi-Bold numerical values */
+    color: var(--payment-text-charcoal);
+    font-size: 15px;
+}
+
+.total-amount-row {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--payment-bg-field);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.total-amount-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; /* Bold label */
+  font-size: 13px;
+  color: var(--payment-text-charcoal);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.total-amount-value {
+  font-size: 32px;
+  font-weight: 800; /* Extra Bold is mentioned for vehicle names and titles... but let's check. 
+  Actually, "Deep Blue used for the payment method header... and total price" 
+  Weight for total price is Bold 700 in description. */
+  font-weight: 700;
+  color: var(--payment-brand-blue);
+  line-height: 1;
+}
+
+.btn-confirm-payment {
+  width: 100%;
+  padding: 18px;
+  background-color: var(--payment-cta-blue);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700; /* Bold btn text */
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 32px;
+}
+
+/* Radio custom style */
+.radio-custom {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--payment-bg-field);
+    flex-shrink: 0;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.radio-custom.checked {
+    border-color: var(--payment-brand-blue);
+}
+
+.radio-custom.checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: var(--payment-brand-blue);
+    border-radius: 50%;
+}
+
+/* Encryption notice */
+.encryption-notice {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 24px;
+    background: #F0F9FF;
+    border-radius: 16px;
+    border: 1px solid #DBEAFE;
+}
+
+.encryption-notice p {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--payment-text-dark-gray);
+    line-height: 1.6;
+}
+
+/* PAYMENT PAGE MOBILE RESPONSIVE */
+@media (max-width: 480px) {
+    .payment-layout {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .page-title {
+        font-size: 28px;
+    }
+
+    .payment-card {
+        padding: 24px;
+        border-radius: 20px;
+    }
+
+    .method-option {
+        padding: 14px 16px;
+        border-radius: 12px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .total-amount-value {
+        font-size: 26px;
+    }
+
+    .total-amount-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .btn-confirm-payment {
+        font-size: 14px;
+        padding: 16px;
+    }
+
+    .encrypted-badge {
+        font-size: 10px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .payment-layout {
+        flex-direction: column;
+    }
+}
