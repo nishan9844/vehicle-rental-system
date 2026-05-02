@@ -10,6 +10,8 @@ import SignUpPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AboutPage from "./pages/AboutPage";
 import TermsPage from "./pages/TermsPage";
+import OrdersPage from "./pages/OrdersPage";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   useEffect(() => {
@@ -28,6 +30,8 @@ function App() {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/terms" element={<TermsPage />} />
+      <Route path="/orders" element={<OrdersPage />} />
+      <Route path="/chat" element={<ChatPage />} />
       <Route path="/404" element={<NotFoundPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

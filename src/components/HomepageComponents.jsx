@@ -39,9 +39,12 @@ export function Hero() {
 
 export function SearchBar() {
     return (
-        <div className="search-wrapper" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <div className="search-wrapper" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', gap: '20px', flexWrap: 'wrap' }}>
             <Link to="/listing" className="search-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyItems: 'center', padding: '16px 32px', fontSize: '18px', borderRadius: '50px' }}>
                 <FaSearch style={{ marginRight: '10px' }} /> Browse All Vehicles
+            </Link>
+            <Link to="/chat" className="search-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyItems: 'center', padding: '16px 32px', fontSize: '18px', borderRadius: '50px', backgroundColor: '#3b82f6' }}>
+                Ask Agents
             </Link>
         </div>
     );

@@ -8,6 +8,7 @@ export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [user, setUser] = useState(null);
     const [profileName, setProfileName] = useState("");
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const navigate = useNavigate();
 
     const toggleMenu = () => setIsOpen(!isOpen);
@@ -80,9 +81,16 @@ export const Navbar = () => {
                     <div className="nav-auth">
                         {user ? (
                             <div className="user-profile">
-                                <span className="user-name">
-                                    <LuUser className="user-icon" /> {profileName}
-                                </span>
+                                <div className="user-dropdown-container" style={{ position: 'relative' }}>
+                                    <span className="user-name" onClick={() => setDropdownOpen(!dropdownOpen)} style={{ cursor: 'pointer' }}>
+                                        <LuUser className="user-icon" /> {profileName}
+                                    </span>
+                                    {dropdownOpen && (
+                                        <div className="user-dropdown">
+                                            <Link to="/orders" className="dropdown-item" onClick={() => { setDropdownOpen(false); setIsOpen(false); }}>My Orders</Link>
+                                        </div>
+                                    )}
+                                </div>
                                 <button className="btn-logout" onClick={handleLogout}>Logout</button>
                             </div>
                         ) : (
