@@ -100,35 +100,48 @@ export function PaymentMain({ method, setMethod }) {
     );
 }
 
-export function PaymentSidebar({ onConfirm }) {
+export function PaymentSidebar({ onConfirm, booking, processing }) {
+    const vehicle = booking?.vehicles || { name: "Velocity GT-S 2024" };
+    const total = booking?.total_price || 1081.55;
+    const deposit = booking?.deposit || 500;
+    
+    // Reverse calculating subtotal and taxes based on the 15% rule
+    const taxesAndSubtotal = total - deposit;
+    const subtotal = taxesAndSubtotal / 1.15;
+    const taxes = taxesAndSubtotal - subtotal;
+
+    // Approximate days
+    const dailyRate = vehicle?.price_per_day || 299;
+    const days = Math.round(subtotal / dailyRate) || 1;
+
     return (
         <aside className="payment-sidebar">
             <div className="payment-card sticky-sidebar">
-                <h2 className="vehicle-name">Velocity GT-S 2024</h2>
+                <h2 className="vehicle-name">{vehicle.name}</h2>
 
                 <div className="summary-rows">
                     <div className="summary-line">
-                        <span className="summary-label">Daily Rate (3 Days)</span>
-                        <strong className="summary-value">NPR700</strong>
+                        <span className="summary-label">Daily Rate ({days} Days)</span>
+                        <strong className="summary-value">NPR {dailyRate.toFixed(2)}</strong>
                     </div>
                     <div className="summary-line">
                         <span className="summary-label">Subtotal</span>
-                        <strong className="summary-value">NPR1000</strong>
+                        <strong className="summary-value">NPR {subtotal.toFixed(2)}</strong>
                     </div>
                     <div className="summary-line">
                         <span className="summary-label">Taxes & Fees (15%)</span>
-                        <strong className="summary-value">NPR 130</strong>
+                        <strong className="summary-value">NPR {taxes.toFixed(2)}</strong>
                     </div>
                     <div className="summary-line" style={{ paddingBottom: "24px", marginBottom: "24px" }}>
                         <span className="summary-label">Security Deposit</span>
-                        <strong className="summary-value">NPR 500</strong>
+                        <strong className="summary-value">NPR {deposit.toFixed(2)}</strong>
                     </div>
                 </div>
 
                 <div className="total-amount-row">
                     <div>
                         <span className="total-amount-label">TOTAL AMOUNT</span>
-                        <div className="total-amount-value">NPR 1,081.55</div>
+                        <div className="total-amount-value">NPR {total.toFixed(2)}</div>
                     </div>
                     <span style={{ fontSize: "10px", color: "var(--payment-text-medium-gray)" }}>NPR Inclusive of all VAT</span>
                 </div>
@@ -136,8 +149,9 @@ export function PaymentSidebar({ onConfirm }) {
                 <button 
                     onClick={onConfirm}
                     className="btn-confirm-payment"
+                    disabled={processing}
                 >
-                    Confirm Payment NPR 1,081.55 <LuArrowRight style={{ width: "18px", marginLeft: "8px" }} />
+                    {processing ? "Processing..." : `Confirm Payment NPR ${total.toFixed(2)}`} <LuArrowRight style={{ width: "18px", marginLeft: "8px" }} />
                 </button>
 
                 <p style={{ fontSize: "10px", color: "var(--text-muted)", textAlign: "center", marginTop: "16px" }}>

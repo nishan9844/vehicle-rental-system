@@ -22,10 +22,8 @@ export const Footer = () => (
             <div className="footer-col">
                 <h4>RESOURCES</h4>
                 <ul>
-                    <li><Link to="/details">Help Center</Link></li>
+                    <li><Link to="/about">Help Center</Link></li>
                     <li><Link to="/terms">Terms of Service</Link></li>
-                    <li><Link to="/details">Privacy Policy</Link></li>
-                    <li><Link to="/details">Insurance</Link></li>
                 </ul>
             </div>
 

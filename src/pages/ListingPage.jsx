@@ -6,7 +6,7 @@ import { supabase } from '../supabaseClient';
 import '../css/listing.css';
 
 // ── Supabase helpers ──────────────────────────────────────────────────────────
-const fetchVehicles = async (filters = {}) => {
+const fetchVehicles = async (filters = {}, page = 1) => {
   let query = supabase.from('vehicles').select('*');
 
   if (filters.availableOnly) {
@@ -28,6 +28,11 @@ const fetchVehicles = async (filters = {}) => {
   } else {
     query = query.order('created_at', { ascending: false });
   }
+
+  const limit = 12;
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+  query = query.range(from, to);
 
   const { data, error } = await query;
   if (error) throw error;
@@ -56,6 +61,8 @@ const ListingPage = () => {
   const [sort, setSort] = useState('Newest');
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   // Load brands once
   useEffect(() => {
@@ -65,11 +72,26 @@ const ListingPage = () => {
   // Reload vehicles when filters change
   useEffect(() => {
     setLoading(true);
-    fetchVehicles({ brands: selectedBrands, maxPrice, transmission, availableOnly, sort })
-      .then(setVehicles)
+    setPage(1);
+    fetchVehicles({ brands: selectedBrands, maxPrice, transmission, availableOnly, sort }, 1)
+      .then((data) => {
+        setVehicles(data);
+        setHasMore(data.length === 12);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [selectedBrands, maxPrice, transmission, availableOnly, sort]);
+
+  const loadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchVehicles({ brands: selectedBrands, maxPrice, transmission, availableOnly, sort }, nextPage)
+      .then((data) => {
+        setVehicles((prev) => [...prev, ...data]);
+        setHasMore(data.length === 12);
+      })
+      .catch(console.error);
+  };
 
   // Client-side search on top of server filters
   const filtered = vehicles.filter(
@@ -202,11 +224,20 @@ const ListingPage = () => {
               </button>
             </div>
           ) : (
-            <div className="cars-grid">
-              {filtered.map((vehicle) => (
-                <CarCard key={vehicle.id} {...vehicle} />
-              ))}
-            </div>
+            <>
+              <div className="cars-grid">
+                {filtered.map((vehicle) => (
+                  <CarCard key={vehicle.id} {...vehicle} />
+                ))}
+              </div>
+              {hasMore && filtered.length > 0 && (
+                <div className="show-more-container">
+                  <button className="btn-show-more" onClick={loadMore}>
+                    Show More Results
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </section>
       </main>

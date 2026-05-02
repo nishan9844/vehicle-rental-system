@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { LuCircleCheck, LuInfo, LuArrowRight } from "react-icons/lu";
 import { Link } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 // Import images
 import teslaImg from "../assets/images/tesla_model_s_1774791127857.png";
@@ -20,31 +21,107 @@ export function BookingHeader() {
 
 export function BookingContent() {
     const navigate = useNavigate();
+    const { id } = useParams();
     const today = new Date().toISOString().split('T')[0];
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 20);
     const maxDateStr = maxDate.toISOString().split('T')[0];
 
+    const [vehicle, setVehicle] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
         licenseId: "",
-        deposit: "NPR 500", // Keep as static recommendation or read-only
         phone: "",
         documentation: "",
         pickupDate: "",
         returnDate: ""
     });
 
+    useEffect(() => {
+        if (!id) {
+            setLoading(false);
+            return;
+        }
+        const fetchVehicle = async () => {
+            const { data, error } = await supabase.from('vehicles').select('*').eq('id', id).single();
+            if (data) setVehicle(data);
+            setLoading(false);
+        };
+        fetchVehicle();
+    }, [id]);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    // Date diff calculation
+    const getDays = () => {
+        if (!formData.pickupDate || !formData.returnDate) return 0;
+        const start = new Date(formData.pickupDate);
+        const end = new Date(formData.returnDate);
+        const diffTime = end.getTime() - start.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays > 0 ? diffDays : 1; // at least 1 day if same date
+    };
+
+    const days = getDays() || 1;
+    const dailyRate = vehicle?.price_per_day || 299;
+    const subtotal = days * dailyRate;
+    const taxes = subtotal * 0.15;
+    const deposit = 500;
+    const total = subtotal + taxes + deposit;
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Booking Details Submitted (POST):", formData);
-        alert("Booking details processed! Redirecting to payment...");
-        navigate("/payment");
+        setSubmitting(true);
+        
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+
+            const bookingData = {
+                user_id: user?.id || null,
+                vehicle_id: id || null,
+                full_name: formData.fullName,
+                email: formData.email,
+                phone: formData.phone,
+                license_id: formData.licenseId,
+                documentation: formData.documentation,
+                pickup_date: formData.pickupDate,
+                return_date: formData.returnDate,
+                total_price: total,
+                deposit: deposit,
+                status: 'pending'
+            };
+
+            const { data, error } = await supabase.from('bookings').insert([bookingData]).select();
+
+            if (error) {
+                console.error("Booking error:", error);
+                alert("Error creating booking: " + error.message);
+                setSubmitting(false);
+            } else {
+                console.log("Booking Details Submitted (POST):", data);
+                navigate(`/payment?booking_id=${data[0].id}`);
+            }
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            alert("An unexpected error occurred.");
+            setSubmitting(false);
+        }
+    };
+
+    if (loading) return <div style={{ padding: "100px", textAlign: "center" }}>Loading...</div>;
+
+    const displayVehicle = vehicle || {
+        name: "Velocity GT-S 2024",
+        transmission: "Automatic",
+        seats: 2,
+        price_per_day: 299,
+        image_url: teslaImg
     };
 
     return (
@@ -55,15 +132,15 @@ export function BookingContent() {
                     <h2 className="card-title">Vehicle Selection</h2>
                     <div className="vehicle-select-flex">
                         <img
-                            src={teslaImg}
-                            alt="Vehicle"
+                            src={displayVehicle.image_url || teslaImg}
+                            alt={displayVehicle.name}
                             className="booking-vehicle-img"
                             style={{ width: "240px", height: "160px", objectFit: "cover", borderRadius: "16px" }}
                         />
                         <div className="vehicle-select-info">
-                            <h3 className="vehicle-name">Velocity GT-S 2024</h3>
+                            <h3 className="vehicle-name">{displayVehicle.name}</h3>
                             <p className="vehicle-sub-details">
-                                Automatic • 4.0L V8 • 2-Seater
+                                {displayVehicle.transmission} • {displayVehicle.seats} Seats
                             </p>
                             <ul className="benefits-list">
                                 <li>
@@ -100,7 +177,7 @@ export function BookingContent() {
                             </div>
                             <div className="form-group">
                                 <label>Security Deposit</label>
-                                <input type="text" name="deposit" className="form-control" value={formData.deposit} readOnly />
+                                <input type="text" name="deposit" className="form-control" value={`NPR ${deposit}`} readOnly />
                             </div>
                         </div>
                         <div className="form-row">
@@ -134,36 +211,32 @@ export function BookingContent() {
 
                     <div className="summary-rows">
                         <div className="summary-item">
-                            <span>Daily Rate (3 days)</span>
-                            <strong className="summary-price">NPR 299.00 / day</strong>
+                            <span>Daily Rate ({getDays() || 1} days)</span>
+                            <strong className="summary-price">NPR {dailyRate.toFixed(2)} / day</strong>
                         </div>
                         <div className="summary-item">
                             <span>Subtotal</span>
-                            <strong className="summary-price">NPR 897.00</strong>
+                            <strong className="summary-price">NPR {subtotal.toFixed(2)}</strong>
                         </div>
                         <div className="summary-item">
                             <span>Taxes & Fees (15%)</span>
-                            <strong className="summary-price">NPR 134.55</strong>
-                        </div>
-                        <div className="summary-item">
-                            <span>Luxury Surcharge</span>
-                            <strong className="summary-price">NPR 50.00</strong>
+                            <strong className="summary-price">NPR {taxes.toFixed(2)}</strong>
                         </div>
                         <div className="summary-item">
                             <span>Security Deposit</span>
-                            <strong className="summary-price">NPR 500</strong>
+                            <strong className="summary-price">NPR {deposit.toFixed(2)}</strong>
                         </div>
                     </div>
 
                     <div className="total-row">
                         <span className="total-label">TOTAL PRICE</span>
-                        <div className="total-amount">NPR 1,081.55</div>
+                        <div className="total-amount">NPR {total.toFixed(2)}</div>
                     </div>
 
                     <div className="legal-notice-box">
                         <p className="legal-text">
                             By clicking "Confirm Booking", you agree to our Rental Agreement and Privacy Policy.
-                            Your credit card will be authorized for a NPR 500 security deposit.
+                            Your credit card will be authorized for a NPR {deposit} security deposit.
                         </p>
                     </div>
 
@@ -171,8 +244,9 @@ export function BookingContent() {
                         type="submit"
                         form="bookingForm"
                         className="btn-confirm"
+                        disabled={submitting}
                     >
-                        Confirm Booking <LuArrowRight style={{ width: "18px", marginLeft: "8px" }} />
+                        {submitting ? 'Processing...' : 'Confirm Booking'} <LuArrowRight style={{ width: "18px", marginLeft: "8px" }} />
                     </button>
                 </div>
             </aside>

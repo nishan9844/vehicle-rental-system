@@ -1,11 +1,55 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { LuUser } from "react-icons/lu";
+import { supabase } from "../supabaseClient";
 import "../css/navbar.css";
 
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [user, setUser] = useState(null);
+    const [profileName, setProfileName] = useState("");
+    const navigate = useNavigate();
 
     const toggleMenu = () => setIsOpen(!isOpen);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.user) {
+                setUser(session.user);
+                fetchProfile(session.user.id);
+            }
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session?.user) {
+                setUser(session.user);
+                fetchProfile(session.user.id);
+            } else {
+                setUser(null);
+                setProfileName("");
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const fetchProfile = async (userId) => {
+        const { data } = await supabase
+            .from("profiles")
+            .select("name")
+            .eq("id", userId)
+            .single();
+        
+        if (data) {
+            setProfileName(data.name || "User");
+        }
+    };
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        navigate("/");
+        setIsOpen(false);
+    };
 
     return (
         <header className="navbar">
@@ -34,8 +78,19 @@ export const Navbar = () => {
                     </ul>
 
                     <div className="nav-auth">
-                        <Link to="/signin" onClick={toggleMenu}><button className="btn-login">Login</button></Link>
-                        <Link to="/signup" onClick={toggleMenu}><button className="btn-signup">Sign up</button></Link>
+                        {user ? (
+                            <div className="user-profile">
+                                <span className="user-name">
+                                    <LuUser className="user-icon" /> {profileName}
+                                </span>
+                                <button className="btn-logout" onClick={handleLogout}>Logout</button>
+                            </div>
+                        ) : (
+                            <>
+                                <Link to="/signin" onClick={toggleMenu}><button className="btn-login">Login</button></Link>
+                                <Link to="/signup" onClick={toggleMenu}><button className="btn-signup">Sign up</button></Link>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

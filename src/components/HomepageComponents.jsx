@@ -39,21 +39,10 @@ export function Hero() {
 
 export function SearchBar() {
     return (
-        <div className="search-wrapper">
-            <div className="search-bar">
-                <div className="search-item">
-                    <label>Pick-up Date</label>
-                    <p>20-Mar-2025</p>
-                </div>
-                <div className="divider" />
-                <div className="search-item">
-                    <label>Return Date</label>
-                    <p>Date</p>
-                </div>
-                <Link to="/listing" className="search-btn" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <FaSearch style={{ marginRight: '8px' }} /> Search
-                </Link>
-            </div>
+        <div className="search-wrapper" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <Link to="/listing" className="search-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyItems: 'center', padding: '16px 32px', fontSize: '18px', borderRadius: '50px' }}>
+                <FaSearch style={{ marginRight: '10px' }} /> Browse All Vehicles
+            </Link>
         </div>
     );
 }

@@ -19,7 +19,7 @@ body {
 }
 
 .listing-container {
-  max-width: 1300px;
+  max-width: 1440px;
   margin: 2rem auto;
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -238,8 +238,8 @@ body {
 /* Car Cards */
 .cars-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
 }
 
 .car-card {
@@ -257,7 +257,7 @@ body {
 
 .car-image-container {
   position: relative;
-  height: 220px;
+  height: 200px;
   background: #f8fafc;
 }
 
@@ -283,7 +283,7 @@ body {
 }
 
 .car-info {
-  padding: 1.75rem;
+  padding: 1.25rem;
 }
 
 .car-brand {

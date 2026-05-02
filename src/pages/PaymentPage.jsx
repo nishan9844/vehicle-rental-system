@@ -1,27 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { PaymentHeader, PaymentMain, PaymentSidebar } from "../components/PaymentPageComponents";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 import "../css/payment.css";
 
 
 export default function PaymentPage() {
     const [method, setMethod] = useState('card');
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const bookingId = searchParams.get('booking_id');
+    const [booking, setBooking] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [processing, setProcessing] = useState(false);
 
-    const handlePayment = (e) => {
+    useEffect(() => {
+        if (!bookingId) {
+            setLoading(false);
+            return;
+        }
+        const fetchBooking = async () => {
+            const { data, error } = await supabase.from('bookings').select('*, vehicles(*)').eq('id', bookingId).single();
+            if (data) setBooking(data);
+            setLoading(false);
+        };
+        fetchBooking();
+    }, [bookingId]);
+
+    const handlePayment = async (e) => {
         if (e) e.preventDefault();
-        console.log("Initiating payment for method:", method);
-        if (method === 'card') {
-            const form = document.getElementById('cardPaymentForm');
-            if (form) {
-                const formData = new FormData(form);
-                console.log("Card Data (POST):", Object.fromEntries(formData));
-                alert("Processing Card Payment...");
+        if (!booking) {
+            alert("No booking found to pay for.");
+            return;
+        }
+
+        setProcessing(true);
+        try {
+            if (method === 'card') {
+                const form = document.getElementById('cardPaymentForm');
+                if (form && !form.checkValidity()) {
+                    form.reportValidity();
+                    setProcessing(false);
+                    return;
+                }
             }
-        } else {
-            alert(`Redirecting to ${method} for secure transaction...`);
+
+            const paymentData = {
+                booking_id: booking.id,
+                method: method,
+                amount: booking.total_price,
+                currency: 'NPR',
+                status: 'completed',
+                paid_at: new Date().toISOString()
+            };
+
+            const { error: paymentError } = await supabase.from('payments').insert([paymentData]);
+            if (paymentError) throw paymentError;
+
+            const { error: bookingError } = await supabase.from('bookings')
+                .update({ status: 'confirmed' })
+                .eq('id', booking.id);
+            if (bookingError) throw bookingError;
+
+            alert("Payment Successful! Your booking is confirmed.");
+            navigate("/");
+
+        } catch (error) {
+            console.error("Payment error:", error);
+            alert("Error processing payment: " + error.message);
+        } finally {
+            setProcessing(false);
         }
     };
+
+    if (loading) return <div style={{ padding: "100px", textAlign: "center" }}>Loading payment details...</div>;
 
     return (
         <>
@@ -30,7 +84,7 @@ export default function PaymentPage() {
                 <PaymentHeader />
                 <div className="payment-layout">
                     <PaymentMain method={method} setMethod={setMethod} />
-                    <PaymentSidebar onConfirm={handlePayment} />
+                    <PaymentSidebar onConfirm={handlePayment} booking={booking} processing={processing} />
                 </div>
             </div>
             <Footer />
