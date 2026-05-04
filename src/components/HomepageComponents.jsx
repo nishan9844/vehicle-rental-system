@@ -6,8 +6,6 @@ import { supabase } from "../supabaseClient";
 // Import images from assets
 import heroSection from "../assets/images/HeroSection.png";
 import teslaImg from "../assets/images/tesla_model_s_1774791127857.png";
-import bikeImg from "../assets/images/bullet_bike_1774791285776.png";
-import bmwImg from "../assets/images/bmw_x7_1774791305841.png";
 import wheels4 from "../assets/images/4wheeler.png";
 import wheels2 from "../assets/images/2wheeler.png";
 import evImg from "../assets/images/ev.png";
@@ -158,6 +156,31 @@ export function TopChoice() {
 }
 
 export function Testimonials() {
+    const [reviews, setReviews] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            const { data, error } = await supabase
+                .from('reviews')
+                .select(`
+                    id,
+                    rating,
+                    body,
+                    created_at,
+                    profiles (name)
+                `)
+                .order('created_at', { ascending: false })
+                .limit(3);
+
+            if (!error && data) {
+                setReviews(data);
+            }
+            setLoading(false);
+        };
+        fetchReviews();
+    }, []);
+
     return (
         <section className="testimonials">
             <div className="container">
@@ -168,24 +191,32 @@ export function Testimonials() {
                     Discover why travelers choose our rental services.
                 </p>
                 <div className="testimonial-grid">
-                    {[1, 2, 3].map((i) => (
-                        <div className="testimonial-card" key={i}>
-                            <div className="testimonial-top">
-                                <div className="avatar"></div>
-                                <div className="testimonial-info">
-                                    <h4>Emma Rodriguez</h4>
-                                    <p className="location">San Francisco, CA</p>
+                    {loading ? (
+                        <p style={{ textAlign: "center", width: "100%" }}>Loading reviews...</p>
+                    ) : reviews.length === 0 ? (
+                        <p style={{ textAlign: "center", width: "100%" }}>No reviews available yet.</p>
+                    ) : (
+                        reviews.map((review) => (
+                            <div className="testimonial-card" key={review.id}>
+                                <div className="testimonial-top">
+                                    <div className="avatar">
+                                        {review.profiles?.name ? review.profiles.name.charAt(0).toUpperCase() : "U"}
+                                    </div>
+                                    <div className="testimonial-info">
+                                        <h4>{review.profiles?.name || "Anonymous User"}</h4>
+                                    </div>
                                 </div>
+                                <div className="stars">
+                                    {[...Array(5)].map((_, i) => (
+                                        <FaStar key={i} color={i < review.rating ? "#fbbf24" : "#e5e7eb"} />
+                                    ))}
+                                </div>
+                                <p>
+                                    "{review.body}"
+                                </p>
                             </div>
-                            <div className="stars">
-                                <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
-                            </div>
-                            <p>
-                                "I've used many booking platforms before,
-                                but none compare to the personalized experience."
-                            </p>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
         </section>

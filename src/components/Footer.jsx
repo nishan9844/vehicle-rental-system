@@ -30,10 +30,10 @@ export const Footer = () => (
             <div className="footer-col">
                 <h4>CONTACT</h4>
                 <ul>
-                    <li><span>1234 Luxury Drive</span></li>
-                    <li><span>San Francisco, CA 94107</span></li>
-                    <li><span>+1 (555) 123-4567</span></li>
-                    <li><span>vehicle@example.com</span></li>
+                    <li><span>Kathmandu, Nepal</span></li>
+                    <li><span>Naxal, Herald College</span></li>
+                    <li><span>+977 9800000000</span></li>
+                    <li><span>info@vental.com</span></li>
                 </ul>
             </div>
         </div>

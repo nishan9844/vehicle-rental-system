@@ -301,15 +301,16 @@
     .nav-auth {
         flex-direction: column;
         width: 100%;
-        gap: 12px;
+        gap: 16px;
+        align-items: flex-start;
     }
 
     .btn-login,
     .btn-signup,
     .btn-logout {
-        width: 100%;
-        text-align: center;
-        padding: 14px 24px;
+        width: auto;
+        text-align: left;
+        padding: 10px 24px;
         font-size: 15px;
     }
 

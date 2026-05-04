@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { LuCircleCheck, LuInfo, LuArrowRight } from "react-icons/lu";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { LuCircleCheck, LuArrowRight } from "react-icons/lu";
 import { supabase } from "../supabaseClient";
 
 // Import images
@@ -21,8 +20,14 @@ export function BookingHeader() {
 
 export function BookingContent() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { id } = useParams();
+    const queryParams = new URLSearchParams(location.search);
+    const initialPickup = queryParams.get("pickup") || "";
+    const initialReturn = queryParams.get("return") || "";
+
     const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date(new Date().getTime() + 86400000).toISOString().split('T')[0];
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 20);
     const maxDateStr = maxDate.toISOString().split('T')[0];
@@ -37,8 +42,8 @@ export function BookingContent() {
         licenseId: "",
         phone: "",
         documentation: "",
-        pickupDate: "",
-        returnDate: ""
+        pickupDate: initialPickup,
+        returnDate: initialReturn
     });
 
     useEffect(() => {
@@ -47,7 +52,7 @@ export function BookingContent() {
             return;
         }
         const fetchVehicle = async () => {
-            const { data, error } = await supabase.from('vehicles').select('*').eq('id', id).single();
+            const { data } = await supabase.from('vehicles').select('*').eq('id', id).single();
             if (data) setVehicle(data);
             setLoading(false);
         };
@@ -55,7 +60,34 @@ export function BookingContent() {
     }, [id]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        let formattedValue = value;
+
+        if (name === 'phone') {
+            formattedValue = value.replace(/\D/g, '').slice(0, 10);
+        } else if (name === 'licenseId') {
+            const numbers = value.replace(/\D/g, '').slice(0, 12);
+            if (numbers.length > 4) {
+                formattedValue = `${numbers.slice(0, 2)}-${numbers.slice(2, 4)}-${numbers.slice(4)}`;
+            } else if (numbers.length > 2) {
+                formattedValue = `${numbers.slice(0, 2)}-${numbers.slice(2)}`;
+            } else {
+                formattedValue = numbers;
+            }
+        } else if (name === 'documentation') {
+            const numbers = value.replace(/\D/g, '').slice(0, 11);
+            if (numbers.length > 6) {
+                formattedValue = `${numbers.slice(0, 2)}-${numbers.slice(2, 4)}-${numbers.slice(4, 6)}-${numbers.slice(6)}`;
+            } else if (numbers.length > 4) {
+                formattedValue = `${numbers.slice(0, 2)}-${numbers.slice(2, 4)}-${numbers.slice(4)}`;
+            } else if (numbers.length > 2) {
+                formattedValue = `${numbers.slice(0, 2)}-${numbers.slice(2)}`;
+            } else {
+                formattedValue = numbers;
+            }
+        }
+
+        setFormData({ ...formData, [name]: formattedValue });
     };
 
     // Date diff calculation
@@ -97,16 +129,10 @@ export function BookingContent() {
                 status: 'pending'
             };
 
-            const { data, error } = await supabase.from('bookings').insert([bookingData]).select();
-
-            if (error) {
-                console.error("Booking error:", error);
-                alert("Error creating booking: " + error.message);
-                setSubmitting(false);
-            } else {
-                console.log("Booking Details Submitted (POST):", data);
-                navigate(`/payment?booking_id=${data[0].id}`);
-            }
+            // Pass the held booking data to the payment page via navigation state
+            console.log("Holding booking data in local state:", bookingData);
+            navigate('/payment', { state: { bookingData, vehicle } });
+            
         } catch (err) {
             console.error("Unexpected error:", err);
             alert("An unexpected error occurred.");
@@ -173,7 +199,7 @@ export function BookingContent() {
                         <div className="form-row">
                             <div className="form-group">
                                 <label>Driver's License ID</label>
-                                <input type="text" name="licenseId" className="form-control" placeholder="eg. A123-4567-8900" value={formData.licenseId} onChange={handleChange} required />
+                                <input type="text" name="licenseId" className="form-control" placeholder="eg. 12-34-56789012" value={formData.licenseId} onChange={handleChange} pattern="\d{2}-\d{2}-\d{8}" title="Format: xx-xx-xxxxxxxx" required />
                             </div>
                             <div className="form-group">
                                 <label>Security Deposit</label>
@@ -187,17 +213,26 @@ export function BookingContent() {
                             </div>
                             <div className="form-group">
                                 <label>Return Date</label>
-                                <input type="date" name="returnDate" className="form-control" min={formData.pickupDate || today} max={maxDateStr} value={formData.returnDate} onChange={handleChange} required />
+                                <input 
+                                    type="date" 
+                                    name="returnDate" 
+                                    className="form-control" 
+                                    min={formData.pickupDate ? new Date(new Date(formData.pickupDate).getTime() + 86400000).toISOString().split('T')[0] : tomorrow} 
+                                    max={maxDateStr} 
+                                    value={formData.returnDate} 
+                                    onChange={handleChange} 
+                                    required 
+                                />
                             </div>
                         </div>
                         <div className="form-row">
                             <div className="form-group">
                                 <label>Phone Number</label>
-                                <input type="text" name="phone" className="form-control" placeholder="eg. +977 98XXXXXX" value={formData.phone} onChange={handleChange} required />
+                                <input type="text" name="phone" className="form-control" placeholder="eg. 9800000000" value={formData.phone} onChange={handleChange} pattern="\d{10}" title="Must be exactly 10 digits" required />
                             </div>
                             <div className="form-group">
-                                <label>Documentation Verification</label>
-                                <input type="text" name="documentation" className="form-control" placeholder="eg. National ID, Citizenship" value={formData.documentation} onChange={handleChange} required />
+                                <label>Documentation Verification (Citizenship)</label>
+                                <input type="text" name="documentation" className="form-control" placeholder="eg. 12-34-56-78901" value={formData.documentation} onChange={handleChange} pattern="\d{2}-\d{2}-\d{2}-\d{5}" title="Format: xx-xx-xx-xxxxx" required />
                             </div>
                         </div>
                     </form>

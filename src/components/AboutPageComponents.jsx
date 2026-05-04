@@ -65,33 +65,6 @@ export function AboutMission() {
     );
 }
 
-export function AboutStats() {
-    return (
-        <section className="about-stats">
-            <div className="container">
-                <div className="stats-grid">
-                    <div className="stat-item">
-                        <span className="stat-number">500+</span>
-                        <span className="stat-label">Vehicles in Fleet</span>
-                    </div>
-                    <div className="stat-item">
-                        <span className="stat-number">10K+</span>
-                        <span className="stat-label">Happy Customers</span>
-                    </div>
-                    <div className="stat-item">
-                        <span className="stat-number">15+</span>
-                        <span className="stat-label">Cities Covered</span>
-                    </div>
-                    <div className="stat-item">
-                        <span className="stat-number">99%</span>
-                        <span className="stat-label">Satisfaction Rate</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-}
-
 export function AboutTeam() {
     return (
         <section className="about-team">
@@ -102,9 +75,12 @@ export function AboutTeam() {
                 </p>
                 <div className="team-grid">
                     {[
-                        { name: "Aarav Sharma", role: "Founder & CEO", initials: "AS" },
-                        { name: "Priya Thapa", role: "Head of Operations", initials: "PT" },
-                        { name: "Rajan Adhikari", role: "Chief Technology Officer", initials: "RA" },
+                        { name: "Abhishek Gora", role: "Founder & CEO", initials: "AG" },
+                        { name: "Eluja Nepal", role: "Head of Operations", initials: "EN" },
+                        { name: "Sapna Chaudhary", role: "Supervisor", initials: "SC" },
+                        { name: "Nishan Pande", role: "Marketing Director", initials: "NP" },
+                        { name: "Ashwin Giri", role: "Manager", initials: "AG" },
+                        { name: "Saurav Tamang", role: "Receptionist", initials: "ST" },
                     ].map((member, idx) => (
                         <div className="team-card" key={idx}>
                             <div className="team-avatar">
@@ -132,12 +108,12 @@ export function AboutContact() {
                     <div className="contact-card">
                         <div className="contact-icon"><LuMapPin /></div>
                         <h4>Visit Us</h4>
-                        <p>Kathmandu, Nepal<br />Thamel, Durbar Marg</p>
+                        <p>Kathmandu, Nepal<br />Naxal, Herald College</p>
                     </div>
                     <div className="contact-card">
                         <div className="contact-icon"><LuPhone /></div>
                         <h4>Call Us</h4>
-                        <p>+977 01-4XXXXXX<br />+977 98XXXXXXXX</p>
+                        <p>+977 01-1111111<br />+977 9800000000</p>
                     </div>
                     <div className="contact-card">
                         <div className="contact-icon"><LuMail /></div>
