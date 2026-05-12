@@ -1,6 +1,4 @@
-/* 
-  DESIGN SYSTEM TOKENS - PAYMENT PAGE 
-*/
+/* DESIGN SYSTEM TOKENS - PAYMENT PAGE */
 :root {
   --payment-text-charcoal: #191C1E;
   --payment-text-dark-gray: #414751;
@@ -252,53 +250,52 @@ body {
 }
 
 /* PAYMENT PAGE MOBILE RESPONSIVE */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .payment-layout {
         flex-direction: column;
-        gap: 24px;
     }
 
-    .page-title {
-        font-size: 28px;
-    }
+    @media (max-width: 480px) {
+        .payment-layout {
+            gap: 24px;
+        }
 
-    .payment-card {
-        padding: 24px;
-        border-radius: 20px;
-    }
+        .page-title {
+            font-size: 28px;
+        }
 
-    .method-option {
-        padding: 14px 16px;
-        border-radius: 12px;
-    }
+        .payment-card {
+            padding: 24px;
+            border-radius: 20px;
+        }
 
-    .form-row {
-        flex-direction: column;
-        gap: 16px;
-    }
+        .method-option {
+            padding: 14px 16px;
+            border-radius: 12px;
+        }
 
-    .total-amount-value {
-        font-size: 26px;
-    }
+        .form-row {
+            flex-direction: column;
+            gap: 16px;
+        }
 
-    .total-amount-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
+        .total-amount-value {
+            font-size: 26px;
+        }
 
-    .btn-confirm-payment {
-        font-size: 14px;
-        padding: 16px;
-    }
+        .total-amount-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
 
-    .encrypted-badge {
-        font-size: 10px;
-    }
-}
+        .btn-confirm-payment {
+            font-size: 14px;
+            padding: 16px;
+        }
 
-@media (min-width: 481px) and (max-width: 768px) {
-    .payment-layout {
-        flex-direction: column;
+        .encrypted-badge {
+            font-size: 10px;
+        }
     }
 }

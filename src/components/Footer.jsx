@@ -32,8 +32,8 @@ export const Footer = () => (
                 <ul>
                     <li><span>Kathmandu, Nepal</span></li>
                     <li><span>Naxal, Herald College</span></li>
-                    <li><span>+977 9800000000</span></li>
-                    <li><span>info@vental.com</span></li>
+                    <li><a href="tel:+9779800000000">+977 9800000000</a></li>
+                    <li><a href="mailto:info@vental.com">info@vental.com</a></li>
                 </ul>
             </div>
         </div>

@@ -113,12 +113,12 @@ export function AboutContact() {
                     <div className="contact-card">
                         <div className="contact-icon"><LuPhone /></div>
                         <h4>Call Us</h4>
-                        <p>+977 01-1111111<br />+977 9800000000</p>
+                        <p><a href="tel:+97701111111">+977 01-1111111</a><br /><a href="tel:+9779800000000">+977 9800000000</a></p>
                     </div>
                     <div className="contact-card">
                         <div className="contact-icon"><LuMail /></div>
                         <h4>Email Us</h4>
-                        <p>info@vental.com<br />support@vental.com</p>
+                        <p><a href="mailto:info@vental.com">info@vental.com</a><br /><a href="mailto:support@vental.com">support@vental.com</a></p>
                     </div>
                     <div className="contact-card">
                         <div className="contact-icon"><LuClock /></div>

@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/global.css";
 import "../css/components.css";
-import "../css/notfound.css";
+import "../css/error.css";
 import { NotFoundContent } from "../components/NotFoundPageComponents";
 
 export default function NotFoundPage() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// ── Filter Sidebar ────────────────────────────────────────────────────────────
+// Filter Sidebar
 export const FilterSidebar = ({
   allBrands,
   selectedBrands,
@@ -116,7 +116,7 @@ export const FilterSidebar = ({
   </aside>
 );
 
-// ── Car Card ──────────────────────────────────────────────────────────────────
+// Car Card
 export const CarCard = ({ id, brand, name, price_per_day, fuel_type, transmission, seats, image_url, status }) => (
   <div className="car-card">
     <div className="car-image-container">

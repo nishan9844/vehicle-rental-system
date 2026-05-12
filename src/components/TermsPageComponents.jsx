@@ -80,7 +80,7 @@ export function TermsContent() {
                     <div className="terms-footer-note">
                         <p>
                             If you have any questions about these Terms & Conditions, please contact us at{" "}
-                            <a href="mailto:legal@vental.com">legal@vental.com</a> or call us at +977 01-4XXXXXX.
+                            <a href="mailto:legal@vental.com">legal@vental.com</a> or call us at <a href="tel:+977014XXXXXX">+977 01-4XXXXXX</a>.
                         </p>
                     </div>
                 </div>

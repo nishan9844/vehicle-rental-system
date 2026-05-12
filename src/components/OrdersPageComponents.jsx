@@ -35,7 +35,7 @@ export const OrdersList = () => {
                                 </div>
                                 <div className="detail-item">
                                     <span className="detail-label">Phone Number</span>
-                                    <span className="detail-value">{order.phoneNumber}</span>
+                                    <span className="detail-value"><a href={`tel:${order.phoneNumber}`}>{order.phoneNumber}</a></span>
                                 </div>
                                 <div className="detail-item">
                                     <span className="detail-label">Vehicle Name</span>

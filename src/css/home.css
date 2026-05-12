@@ -340,109 +340,7 @@
 }
 
 /* HOME PAGE MOBILE RESPONSIVE */
-@media (max-width: 480px) {
-    .hero {
-        padding: 40px 0 20px;
-    }
-
-    .hero-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-
-    .hero h1 {
-        font-size: 36px;
-    }
-
-    .hero p {
-        font-size: 15px;
-    }
-
-    .hero-main-img {
-        height: 220px;
-        border-radius: 16px;
-    }
-
-    .search-bar {
-        flex-direction: column;
-        border-radius: 20px;
-        padding: 20px;
-        gap: 16px;
-        width: 90%;
-    }
-
-    .divider {
-        width: 100%;
-        height: 1px;
-    }
-
-    .search-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 14px;
-        border-radius: 14px;
-    }
-
-    .categories {
-        padding: 50px 0;
-    }
-
-    .category-grid {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .category-card {
-        width: 100%;
-        max-width: 360px;
-    }
-
-    .category-img {
-        height: 180px;
-    }
-
-    .section-title {
-        font-size: 26px;
-    }
-
-    .topchoice {
-        padding: 50px 0;
-    }
-
-    .top-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 24px;
-    }
-
-    .car-grid {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .car-card {
-        width: 100%;
-    }
-
-    .testimonials {
-        padding: 50px 0;
-    }
-
-    .testimonial-grid {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .testimonial-card {
-        width: 100%;
-        max-width: 360px;
-    }
-}
-
-@media (min-width: 481px) and (max-width: 768px) {
+@media (max-width: 768px) {
     .hero-grid {
         grid-template-columns: 1fr;
         gap: 30px;
@@ -478,5 +376,102 @@
 
     .testimonial-card {
         width: 280px;
+    }
+
+    @media (max-width: 480px) {
+        .hero {
+            padding: 40px 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+        }
+
+        .hero p {
+            font-size: 15px;
+        }
+
+        .hero-main-img {
+            height: 220px;
+            border-radius: 16px;
+        }
+
+        .search-bar {
+            flex-direction: column;
+            border-radius: 20px;
+            padding: 20px;
+            gap: 16px;
+            width: 90%;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+        }
+
+        .search-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 14px;
+            border-radius: 14px;
+        }
+
+        .categories {
+            padding: 50px 0;
+        }
+
+        .category-grid {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .category-card {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .category-img {
+            height: 180px;
+        }
+
+        .section-title {
+            font-size: 26px;
+        }
+
+        .topchoice {
+            padding: 50px 0;
+        }
+
+        .top-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .car-grid {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .car-card {
+            width: 100%;
+        }
+
+        .testimonials {
+            padding: 50px 0;
+        }
+
+        .testimonial-grid {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .testimonial-card {
+            width: 100%;
+            max-width: 360px;
+        }
     }
 }

@@ -5,7 +5,7 @@ import { FilterSidebar, CarCard } from '../components/ListingPageComponents';
 import { supabase } from '../supabaseClient';
 import '../css/listing.css';
 
-// ── Supabase helpers ──────────────────────────────────────────────────────────
+// Supabase helpers
 const fetchVehicles = async (filters = {}, page = 1) => {
   let query = supabase.from('vehicles').select('*');
 
@@ -48,7 +48,7 @@ const fetchBrands = async () => {
   return [...new Set(data.map((v) => v.brand))];
 };
 
-// ── Page Component ────────────────────────────────────────────────────────────
+// Page Component
 const ListingPage = () => {
   const [vehicles, setVehicles] = useState([]);
   const [allBrands, setAllBrands] = useState([]);
