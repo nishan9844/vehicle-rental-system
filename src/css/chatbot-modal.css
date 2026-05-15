@@ -1,0 +1,136 @@
+.chatbot-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.chatbot-modal {
+    width: min(520px, 100%);
+    height: min(680px, 90vh);
+    background: #ffffff;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25);
+}
+
+.chatbot-header {
+    padding: 20px;
+    background: #1a202c;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chatbot-header h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.chatbot-header p {
+    margin: 4px 0 0;
+    color: #cbd5e0;
+    font-size: 14px;
+}
+
+.chatbot-close {
+    border: none;
+    background: #2d3748;
+    color: #ffffff;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.chatbot-messages {
+    flex: 1;
+    padding: 18px;
+    overflow-y: auto;
+    background: #f8fafc;
+}
+
+.chatbot-message {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.chatbot-message.user {
+    justify-content: flex-end;
+}
+
+.chatbot-message.bot {
+    justify-content: flex-start;
+}
+
+.chatbot-bubble {
+    max-width: 82%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    line-height: 1.45;
+    font-size: 14px;
+}
+
+.chatbot-message.user .chatbot-bubble {
+    background: #3182ce;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.chatbot-message.bot .chatbot-bubble {
+    background: #ffffff;
+    color: #2d3748;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 4px;
+}
+
+.chatbot-input-row {
+    display: flex;
+    gap: 10px;
+    padding: 14px;
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+}
+
+.chatbot-input-row input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.chatbot-input-row input:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+}
+
+.chatbot-input-row button {
+    border: none;
+    border-radius: 8px;
+    padding: 0 18px;
+    background: #3182ce;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .chatbot-modal {
+        height: 92vh;
+    }
+
+    .chatbot-bubble {
+        max-width: 90%;
+    }
+}

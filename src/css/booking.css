@@ -1,0 +1,287 @@
+/* 
+  DESIGN SYSTEM TOKENS - BOOKING PAGE 
+*/
+:root {
+  --booking-text-charcoal: #191C1E;
+  --booking-text-dark-gray: #414751;
+  --booking-text-medium-gray: #6B7280;
+  --booking-brand-blue: #005DA7;
+  --booking-cta-blue: #2563EB;
+  --booking-bg-page: #F7F9FB;
+  --booking-bg-card: #FFFFFF;
+  --booking-bg-field: #E0E3E5;
+  --booking-bg-legal: #F2F4F6;
+  --booking-bg-placeholder: #ECEEF0;
+}
+
+body {
+  background-color: var(--booking-bg-page);
+  color: var(--booking-text-charcoal);
+  font-family: 'Inter', sans-serif;
+}
+
+.booking-layout {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  margin-bottom: 100px;
+}
+
+.booking-main {
+  flex: 2;
+}
+
+.booking-sidebar {
+  flex: 1;
+}
+
+.booking-card {
+  background: var(--booking-bg-card);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.page-header h1 {
+  font-family: 'ABeeZee', sans-serif;
+  font-weight: 400;
+  font-size: 40px;
+  color: var(--booking-text-charcoal);
+  margin-bottom: 12px;
+}
+
+.page-header p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  color: var(--booking-text-dark-gray);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.card-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700; /* Bold */
+  font-size: 24px;
+  margin-bottom: 32px;
+  color: var(--booking-text-charcoal);
+}
+
+/* Vehicle Selection */
+.vehicle-select-flex {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.booking-vehicle-img {
+  width: 250px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 20px;
+  background-color: var(--booking-bg-placeholder);
+}
+
+.vehicle-name {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: var(--booking-text-charcoal);
+}
+
+.vehicle-sub-details {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500; /* Medium */
+  color: var(--booking-text-dark-gray);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.feature-highlight {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; /* Semi-Bold */
+  color: var(--booking-brand-blue);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Forms */
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 24px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; /* Bold (Input labels) */
+  font-size: 13px;
+  color: var(--booking-text-dark-gray);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--booking-bg-field);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500; /* Medium (User text) */
+  font-size: 15px;
+  color: var(--booking-text-medium-gray);
+  outline: none;
+}
+
+.form-control::placeholder {
+    color: var(--booking-text-medium-gray);
+    font-weight: 500;
+}
+
+/* Booking Summary */
+.summary-item {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400; /* Regular line items */
+  color: var(--booking-text-dark-gray);
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.summary-price {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500; /* Medium (Price values) */
+  color: var(--booking-text-charcoal);
+}
+
+.total-row {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--booking-bg-placeholder);
+}
+
+.total-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; /* Bold (Label) */
+  font-size: 14px;
+  color: var(--booking-text-charcoal);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.total-amount {
+  font-family: 'ABeeZee', sans-serif;
+  font-weight: 400; /* Regular */
+  font-size: 36px;
+  color: var(--booking-brand-blue);
+}
+
+.legal-notice-box {
+  background: var(--booking-bg-legal);
+  padding: 20px;
+  border-radius: 16px;
+  margin: 32px 0;
+}
+
+.legal-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400; /* Regular legal disclaimer */
+  font-size: 12px;
+  color: var(--booking-text-dark-gray);
+  line-height: 1.6;
+}
+
+.btn-confirm {
+  width: 100%;
+  padding: 18px;
+  background-color: var(--booking-cta-blue);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; /* Bold button text */
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* BOOKING PAGE MOBILE RESPONSIVE */
+@media (max-width: 480px) {
+    .booking-layout {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+    }
+
+    .booking-card {
+        padding: 24px;
+        border-radius: 18px;
+    }
+
+    .card-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .vehicle-select-flex {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .booking-vehicle-img {
+        width: 100% !important;
+        height: 180px !important;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .total-amount {
+        font-size: 28px;
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .benefits-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .booking-layout {
+        flex-direction: column;
+    }
+
+    .vehicle-select-flex {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .booking-vehicle-img {
+        width: 100% !important;
+        max-width: 400px;
+    }
+}

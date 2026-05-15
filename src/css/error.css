@@ -1,0 +1,108 @@
+/* Error Page Styles */
+.error-page {
+  background: radial-gradient(circle at center, #F0F9FF 0%, var(--bg-main) 50%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.error-container {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.error-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.bg-text {
+  font-size: 200px;
+  font-weight: 800;
+  color: #F1F5F9; /* Very light gray to act as background text */
+  line-height: 1;
+  letter-spacing: -10px;
+  user-select: none;
+}
+
+.error-icon-circle {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05); /* Soft drop shadow */
+  margin: 0 16px;
+  z-index: 2;
+}
+
+.error-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--primary-blue);
+}
+
+.icon-slash {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 60px;
+  height: 3px;
+  background: var(--primary-blue);
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.error-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.error-desc {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 400px;
+  margin-bottom: 40px;
+}
+
+/* ERROR PAGE MOBILE RESPONSIVE */
+@media (max-width: 480px) {
+    .bg-text {
+        font-size: 120px;
+    }
+
+    .error-icon-circle {
+        width: 70px;
+        height: 70px;
+    }
+
+    .error-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .icon-slash {
+        width: 40px;
+    }
+
+    .error-title {
+        font-size: 26px;
+    }
+
+    .error-desc {
+        font-size: 14px;
+    }
+}

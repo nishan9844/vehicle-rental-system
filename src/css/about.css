@@ -1,0 +1,282 @@
+/* ABOUT PAGE STYLES */
+
+/* Hero */
+.about-hero {
+    padding: 80px 0 60px;
+    text-align: center;
+}
+
+.about-hero-content {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.about-tagline {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #2563EB;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.about-hero-title {
+    font-family: 'ABeeZee', sans-serif;
+    font-size: 52px;
+    font-weight: 400;
+    color: #191C1E;
+    line-height: 1.15;
+    margin-bottom: 24px;
+}
+
+.about-hero-title span {
+    color: #2563EB;
+}
+
+.about-hero-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: #414751;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Mission Section */
+.about-mission {
+    padding: 80px 0;
+}
+
+.mission-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+.mission-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 40px 32px;
+    border: 1px solid #E0E3E5;
+    transition: all 0.3s ease;
+}
+
+.mission-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.mission-icon {
+    width: 56px;
+    height: 56px;
+    background: #EFF6FF;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563EB;
+    font-size: 24px;
+    margin-bottom: 24px;
+}
+
+.mission-card h3 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #191C1E;
+    margin-bottom: 16px;
+}
+
+.mission-card p {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    color: #414751;
+    line-height: 1.7;
+}
+
+
+
+/* Team Section */
+.about-team {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.about-section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: #191C1E;
+    margin-bottom: 12px;
+}
+
+.about-section-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #6B7280;
+    margin-bottom: 48px;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.team-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 40px 24px;
+    border: 1px solid #E0E3E5;
+    transition: all 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.06);
+}
+
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB, #005DA7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.team-avatar span {
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+}
+
+.team-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #191C1E;
+    margin-bottom: 6px;
+}
+
+.team-role {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #005DA7;
+}
+
+/* Contact Section */
+.about-contact {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.contact-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 32px 20px;
+    border: 1px solid #E0E3E5;
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    border-color: #2563EB;
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.08);
+}
+
+.contact-icon {
+    width: 48px;
+    height: 48px;
+    background: #EFF6FF;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563EB;
+    font-size: 22px;
+    margin: 0 auto 16px;
+}
+
+.contact-card h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #191C1E;
+    margin-bottom: 10px;
+}
+
+.contact-card p {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #6B7280;
+    line-height: 1.6;
+}
+
+/* ABOUT PAGE MOBILE RESPONSIVE */
+@media (max-width: 480px) {
+    .about-hero {
+        padding: 50px 0 40px;
+    }
+
+    .about-hero-title {
+        font-size: 32px;
+    }
+
+    .about-hero-desc {
+        font-size: 15px;
+    }
+
+    .mission-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .about-section-title {
+        font-size: 28px;
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .about-hero-title {
+        font-size: 40px;
+    }
+
+    .mission-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contact-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
