@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LuApple, LuUser, LuAtSign, LuLock } from "react-icons/lu";
+import { LuUser, LuAtSign, LuLock } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
@@ -120,10 +120,6 @@ export function SignInForm() {
                     <img src="https://cdn.iconscout.com/icon/free/png-256/free-google-160-189824.png" alt="Google" width="20" />
                     Google
                 </button>
-                <button className="oauth-btn">
-                    <LuApple style={{ width: "20px" }} />
-                    Apple
-                </button>
             </div>
         </div>
     );
@@ -230,9 +226,6 @@ export function SignUpForm() {
                 <button className="oauth-btn">
                     <img src="https://cdn.iconscout.com/icon/free/png-256/free-google-160-189824.png" alt="Google" width="20" />
                     Google
-                </button>
-                <button className="oauth-btn">
-                    <LuApple style={{ width: "20px" }} /> Apple
                 </button>
             </div>
             <p className="text-center" style={{ marginTop: "24px", fontSize: "12px", color: "var(--text-muted)" }}>

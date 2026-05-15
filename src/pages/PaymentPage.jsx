@@ -8,7 +8,7 @@ import "../css/payment.css";
 
 
 export default function PaymentPage() {
-    const [method, setMethod] = useState('card');
+    const [method, setMethod] = useState('khalti');
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -18,12 +18,7 @@ export default function PaymentPage() {
     const [booking, setBooking] = useState(null);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
-    const [cardData, setCardData] = useState({
-        cardholder_name: 'Johnathan Doe',
-        card_number: '',
-        expiry: '',
-        cvv: ''
-    });
+
 
     useEffect(() => {
         if (heldBooking) {
@@ -53,21 +48,13 @@ export default function PaymentPage() {
 
         setProcessing(true);
         try {
-            if (method === 'card') {
-                const form = document.getElementById('cardPaymentForm');
-                if (form && !form.checkValidity()) {
-                    form.reportValidity();
-                    setProcessing(false);
-                    return;
-                }
-            }
+
 
             const backendPayload = {
                 booking_id: booking.id,
                 method: method,
                 amount: booking.total_price,
-                currency: 'NPR',
-                ...(method === 'card' ? { card_details: cardData } : {})
+                currency: 'NPR'
             };
 
             // Simulating a POST request to the backend payment handler
@@ -108,7 +95,7 @@ export default function PaymentPage() {
             <div className="container" style={{ maxWidth: "1000px", padding: "60px 24px" }}>
                 <PaymentHeader />
                 <div className="payment-layout">
-                    <PaymentMain method={method} setMethod={setMethod} cardData={cardData} setCardData={setCardData} />
+                    <PaymentMain method={method} />
                     <PaymentSidebar onConfirm={handlePayment} booking={booking} processing={processing} />
                 </div>
             </div>

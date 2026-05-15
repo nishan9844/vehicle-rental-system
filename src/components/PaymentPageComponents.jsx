@@ -1,9 +1,8 @@
 import React from "react";
 import {
-    LuShieldCheck, LuCreditCard,
-    LuLock, LuArrowRight
+    LuShieldCheck,
+    LuLock, LuArrowRight, LuWallet
 } from "react-icons/lu";
-import esewaImg from "../assets/images/esewa.png";
 import khaltiImg from "../assets/images/khalti.jpg";
 
 export function PaymentHeader() {
@@ -18,102 +17,35 @@ export function PaymentHeader() {
     );
 }
 
-export function PaymentMain({ method, setMethod, cardData, setCardData }) {
-    const handleCardChange = (e) => {
-        const { name, value } = e.target;
-        let formattedValue = value;
+export function PaymentMain({ method }) {
 
-        if (name === 'card_number') {
-            const v = value.replace(/\s+/g, '').replace(/\D/g, '').substring(0, 16);
-            const parts = [];
-            for (let i = 0; i < v.length; i += 4) {
-                parts.push(v.substring(i, i + 4));
-            }
-            formattedValue = parts.length > 0 ? parts.join(' ') : v;
-        } else if (name === 'expiry') {
-            const v = value.replace(/\D/g, '').substring(0, 4);
-            if (v.length >= 3) {
-                formattedValue = `${v.substring(0, 2)}/${v.substring(2, 4)}`;
-            } else {
-                formattedValue = v;
-            }
-        } else if (name === 'cvv') {
-            formattedValue = value.replace(/\D/g, '').substring(0, 4); // some cards have 4 digit cvv
-        } else {
-            formattedValue = value;
-        }
-
-        if (setCardData) {
-            setCardData({ ...cardData, [name]: formattedValue });
-        }
-    };
     return (
         <main className="payment-main">
             <div className="payment-card">
                 <h2 className="section-title" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <LuCreditCard style={{ color: "var(--payment-brand-blue)" }} /> Payment Method
+                    <LuWallet style={{ color: "var(--payment-brand-blue)" }} /> Payment Method
                 </h2>
 
                 <div className="payment-methods">
                     <label
-                        className={`method-option ${method === 'card' ? 'active' : ''}`}
-                        onClick={() => setMethod('card')}
-                    >
-                        <LuCreditCard />
-                        <span style={{ flex: 1, fontWeight: 500 }}>Credit / Debit Card</span>
-                        <div className={`radio-custom ${method === 'card' ? 'checked' : ''}`}></div>
-                    </label>
-                    <label
-                        className={`method-option ${method === 'esewa' ? 'active' : ''}`}
-                        onClick={() => setMethod('esewa')}
-                    >
-                        <img src={esewaImg} alt="eSewa" style={{ width: '32px', height: 'auto', borderRadius: '4px' }} />
-                        <span className="option-label">eSewa Wallet</span>
-                        <div className={`radio-custom ${method === 'esewa' ? 'checked' : ''}`}></div>
-                    </label>
-                    <label
-                        className={`method-option ${method === 'khalti' ? 'active' : ''}`}
-                        onClick={() => setMethod('khalti')}
+                        className="method-option active"
                     >
                         <img src={khaltiImg} alt="Khalti" style={{ width: '32px', height: 'auto', borderRadius: '4px' }} />
                         <span className="option-label">Khalti Digital</span>
-                        <div className={`radio-custom ${method === 'khalti' ? 'checked' : ''}`}></div>
+                        <div className="radio-custom checked"></div>
                     </label>
                 </div>
 
-                {method === 'card' ? (
-                    <form id="cardPaymentForm" className="card-form" method="POST">
-                        <div className="form-group">
-                            <label>CARDHOLDER NAME</label>
-                            <input type="text" name="cardholder_name" className="form-control" value={cardData?.cardholder_name || ''} onChange={handleCardChange} required />
-                        </div>
-                        <div className="form-group">
-                            <label>CARD NUMBER</label>
-                            <input type="text" name="card_number" className="form-control" placeholder="0000 0000 0000 0000" value={cardData?.card_number || ''} onChange={handleCardChange} pattern="\d{4}\s\d{4}\s\d{4}\s\d{4}" title="Format: xxxx xxxx xxxx xxxx" required />
-                        </div>
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>EXPIRY DATE</label>
-                                <input type="text" name="expiry" className="form-control" placeholder="MM/YY" value={cardData?.expiry || ''} onChange={handleCardChange} pattern="\d{2}/\d{2}" title="Format: MM/YY" required />
-                            </div>
-                            <div className="form-group">
-                                <label>CVV</label>
-                                <input type="password" name="cvv" className="form-control" placeholder="•••" value={cardData?.cvv || ''} onChange={handleCardChange} pattern="\d{3,4}" title="3 or 4 digits" required />
-                            </div>
-                        </div>
-                    </form>
-                ) : (
-                    <div className="digital-wallet-notice" style={{ padding: "32px", textAlign: "center", background: "#f8fafc", borderRadius: "12px", border: "1px dashed var(--border-color)", margin: "24px 0" }}>
-                        <img
-                            src={method === 'esewa' ? esewaImg : khaltiImg}
-                            alt={method}
-                            style={{ height: "45px", margin: "0 auto 16px auto" }}
-                        />
-                        <p style={{ fontSize: "14px", color: "var(--text-muted)", lineHeight: "1.6" }}>
-                            You will be redirected to {method === 'esewa' ? 'eSewa' : 'Khalti'} to complete your secure NPR transaction safely.
-                        </p>
-                    </div>
-                )}
+                <div className="digital-wallet-notice" style={{ padding: "32px", textAlign: "center", background: "#f8fafc", borderRadius: "12px", border: "1px dashed var(--border-color)", margin: "24px 0" }}>
+                    <img
+                        src={khaltiImg}
+                        alt="Khalti"
+                        style={{ height: "45px", margin: "0 auto 16px auto" }}
+                    />
+                    <p style={{ fontSize: "14px", color: "var(--text-muted)", lineHeight: "1.6" }}>
+                        You will be redirected to Khalti to complete your secure NPR transaction safely.
+                    </p>
+                </div>
             </div>
 
             <div className="encryption-notice">
