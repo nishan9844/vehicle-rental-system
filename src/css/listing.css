@@ -267,21 +267,6 @@ body {
     object-fit: cover;
 }
 
-.badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background: white;
-  color: var(--badge-teal);
-  padding: 6px 12px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 900;
-  border-radius: 6px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  z-index: 10;
-}
-
 .car-info {
   padding: 1.25rem;
 }

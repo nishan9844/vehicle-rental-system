@@ -57,7 +57,7 @@ export function VehicleCategories() {
                     Explore our selection of premium vehicles available for your next adventure.
                 </p>
                 <div className="category-grid">
-                    <Link to="/listing" className="category-item" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link to="/listing?category=4 Wheeler" className="category-item" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <h4 className="category-title">4 Wheeler</h4>
                         <div className="category-card">
                             <div className="category-img">
@@ -65,7 +65,7 @@ export function VehicleCategories() {
                             </div>
                         </div>
                     </Link>
-                    <Link to="/listing" className="category-item" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link to="/listing?category=2 Wheeler" className="category-item" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <h4 className="category-title">2 Wheeler</h4>
                         <div className="category-card">
                             <div className="category-img">
@@ -73,7 +73,7 @@ export function VehicleCategories() {
                             </div>
                         </div>
                     </Link>
-                    <Link to="/listing" className="category-item" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link to="/listing?category=EV" className="category-item" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <h4 className="category-title">EV</h4>
                         <div className="category-card">
                             <div className="category-img">
@@ -130,6 +130,16 @@ export function TopChoice() {
                         topVehicles.map((vehicle) => (
                             <div className="car-card" key={vehicle.id}>
                                 <div className="car-img" style={{ height: "200px", overflow: "hidden" }}>
+                                    <div className="badges-container">
+                                        {vehicle.status === 'AVAILABLE' ? (
+                                            <span className="badge available-badge">AVAILABLE NOW</span>
+                                        ) : (
+                                            <span className="badge unavailable-badge">NOT AVAILABLE</span>
+                                        )}
+                                        {vehicle.insurance_included && (
+                                            <span className="badge insurance-badge">INSURANCE INCLUDED</span>
+                                        )}
+                                    </div>
                                     <img src={vehicle.image_url || teslaImg} alt={vehicle.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                                 </div>
                                 <div className="car-info">

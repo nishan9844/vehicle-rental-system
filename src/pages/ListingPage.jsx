@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { FilterSidebar, CarCard } from '../components/ListingPageComponents';
@@ -15,10 +16,13 @@ const fetchVehicles = async (filters = {}, page = 1) => {
   if (filters.brands && filters.brands.length > 0) {
     query = query.in('brand', filters.brands);
   }
+  if (filters.category && filters.category !== 'All') {
+    query = query.eq('category', filters.category);
+  }
   if (filters.transmission && filters.transmission !== 'All') {
     query = query.eq('transmission', filters.transmission);
   }
-  if (filters.maxPrice && filters.maxPrice < 1000) {
+  if (filters.maxPrice && filters.maxPrice < 50000) {
     query = query.lte('price_per_day', filters.maxPrice);
   }
   if (filters.sort === 'Price Low') {
@@ -50,12 +54,17 @@ const fetchBrands = async () => {
 
 // Page Component
 const ListingPage = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialCategory = queryParams.get('category') || 'All';
+
   const [vehicles, setVehicles] = useState([]);
   const [allBrands, setAllBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedBrands, setSelectedBrands] = useState([]);
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [category, setCategory] = useState(initialCategory);
+  const [maxPrice, setMaxPrice] = useState(50000);
   const [transmission, setTransmission] = useState('All');
   const [availableOnly, setAvailableOnly] = useState(false);
   const [sort, setSort] = useState('Newest');
@@ -69,23 +78,30 @@ const ListingPage = () => {
     fetchBrands().then(setAllBrands).catch(console.error);
   }, []);
 
+  // Sync category with URL param if it changes (e.g. user clicks another category on home while on listing)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const newCategory = params.get('category') || 'All';
+    setCategory(newCategory);
+  }, [location.search]);
+
   // Reload vehicles when filters change
   useEffect(() => {
     setLoading(true);
     setPage(1);
-    fetchVehicles({ brands: selectedBrands, maxPrice, transmission, availableOnly, sort }, 1)
+    fetchVehicles({ brands: selectedBrands, category, maxPrice, transmission, availableOnly, sort }, 1)
       .then((data) => {
         setVehicles(data);
         setHasMore(data.length === 12);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [selectedBrands, maxPrice, transmission, availableOnly, sort]);
+  }, [selectedBrands, category, maxPrice, transmission, availableOnly, sort]);
 
   const loadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    fetchVehicles({ brands: selectedBrands, maxPrice, transmission, availableOnly, sort }, nextPage)
+    fetchVehicles({ brands: selectedBrands, category, maxPrice, transmission, availableOnly, sort }, nextPage)
       .then((data) => {
         setVehicles((prev) => [...prev, ...data]);
         setHasMore(data.length === 12);
@@ -108,16 +124,20 @@ const ListingPage = () => {
 
   const clearFilters = () => {
     setSelectedBrands([]);
-    setMaxPrice(1000);
+    setCategory('All');
+    setMaxPrice(50000);
     setTransmission('All');
     setAvailableOnly(false);
     setSearch('');
     setSort('Newest');
+    // Clear URL query parameters
+    window.history.replaceState(null, '', location.pathname);
   };
 
   const hasActiveFilters =
     selectedBrands.length > 0 ||
-    maxPrice < 1000 ||
+    category !== 'All' ||
+    maxPrice < 50000 ||
     transmission !== 'All' ||
     availableOnly ||
     !!search;
@@ -143,6 +163,8 @@ const ListingPage = () => {
             allBrands={allBrands}
             selectedBrands={selectedBrands}
             onToggleBrand={toggleBrand}
+            category={category}
+            onCategoryChange={setCategory}
             maxPrice={maxPrice}
             onMaxPriceChange={setMaxPrice}
             transmission={transmission}

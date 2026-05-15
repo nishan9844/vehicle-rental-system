@@ -39,7 +39,7 @@
 
 .hero-main-img {
     width: 100%;
-    height: 350px; /* Adjusted height for rectangular look */
+    height: 350px;
     object-fit: cover;
     border-radius: 20px;
     max-width: 800px;
@@ -138,8 +138,10 @@
     display: flex;
     gap: 30px;
     margin-top: 40px;
-    justify-content: center; /* Center the categories */
-    flex-wrap: nowrap; /* Keep them in one row */
+    justify-content: center;
+    /* Center the categories */
+    flex-wrap: nowrap;
+    /* Keep them in one row */
 }
 
 .category-item {
@@ -151,7 +153,8 @@
     font-family: 'Outfit';
     font-weight: 700;
     margin-bottom: 15px;
-    font-size: 24px; /* Increased font size */
+    font-size: 24px;
+    /* Increased font size */
     color: #1e293b;
 }
 
@@ -218,6 +221,7 @@
 }
 
 .car-img {
+    position: relative;
     padding-top: 15px;
     height: 200px;
     background: #f8fafc;

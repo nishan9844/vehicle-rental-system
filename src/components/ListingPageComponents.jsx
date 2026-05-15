@@ -6,6 +6,8 @@ export const FilterSidebar = ({
   allBrands,
   selectedBrands,
   onToggleBrand,
+  category,
+  onCategoryChange,
   maxPrice,
   onMaxPriceChange,
   transmission,
@@ -18,6 +20,20 @@ export const FilterSidebar = ({
 }) => (
   <aside className="filter-sidebar">
     <h3>Filters</h3>
+
+    {/* Category */}
+    <div className="filter-section">
+      <span className="filter-label">Category</span>
+      <select
+        value={category}
+        onChange={(e) => onCategoryChange(e.target.value)}
+      >
+        <option value="All">All Categories</option>
+        <option value="2 Wheeler">2 Wheeler</option>
+        <option value="4 Wheeler">4 Wheeler</option>
+        <option value="EV">EV</option>
+      </select>
+    </div>
 
     {/* Brand */}
     <div className="filter-section">
@@ -45,16 +61,16 @@ export const FilterSidebar = ({
       <input
         type="range"
         className="range-slider"
-        min="50"
-        max="1000"
-        step="50"
+        min="500"
+        max="50000"
+        step="500"
         value={maxPrice}
         onChange={(e) => onMaxPriceChange(Number(e.target.value))}
       />
       <div className="range-labels">
-        <span>NPR 50</span>
+        <span>NPR 500</span>
         <span style={{ color: 'var(--primary-blue)', fontWeight: 700 }}>NPR {maxPrice}</span>
-        <span>NPR 1000</span>
+        <span>NPR 50000</span>
       </div>
     </div>
 
@@ -117,10 +133,19 @@ export const FilterSidebar = ({
 );
 
 // Car Card
-export const CarCard = ({ id, brand, name, price_per_day, fuel_type, transmission, seats, image_url, status }) => (
+export const CarCard = ({ id, brand, name, price_per_day, fuel_type, transmission, seats, image_url, status, insurance_included }) => (
   <div className="car-card">
     <div className="car-image-container">
-      {status === 'AVAILABLE' && <span className="badge">AVAILABLE NOW</span>}
+      <div className="badges-container">
+        {status === 'AVAILABLE' ? (
+          <span className="badge available-badge">AVAILABLE NOW</span>
+        ) : (
+          <span className="badge unavailable-badge">NOT AVAILABLE</span>
+        )}
+        {insurance_included && (
+          <span className="badge insurance-badge">INSURANCE INCLUDED</span>
+        )}
+      </div>
       {image_url ? (
         <img src={image_url} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       ) : (
