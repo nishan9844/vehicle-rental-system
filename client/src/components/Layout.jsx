@@ -6,6 +6,8 @@ import Header from './Header';
 const Layout = () => {
     const location = useLocation();
 
+    console.log('Layout: Rendering layout for path:', location.pathname);
+
     // Custom titles based on route
     const getPageTitle = () => {
         switch (location.pathname) {

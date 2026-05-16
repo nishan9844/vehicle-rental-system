@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard,
     Car,
@@ -26,6 +26,12 @@ const navItems = [
 ];
 
 const Sidebar = () => {
+    const navigate = useNavigate();
+    
+    const handleNewRental = () => {
+        navigate('/bookings/new');
+    };
+    
     return (
         <aside className="w-64 bg-white h-screen flex flex-col border-r border-gray-200 sticky top-0 shrink-0">
             <div className="p-6 flex items-center gap-3">
@@ -54,7 +60,10 @@ const Sidebar = () => {
             </nav>
 
             <div className="px-4 mb-6 space-y-2">
-                <button className="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 group transition-all duration-200 hover:text-white">
+                <button 
+                    onClick={handleNewRental}
+                    className="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 group transition-all duration-200 hover:text-white"
+                >
                     <Plus size={20} />
                     <span className="font-medium group-hover:text-white">New Rental</span>
                 </button>

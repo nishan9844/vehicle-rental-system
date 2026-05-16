@@ -1,5 +1,5 @@
-import React from 'react';
-import { Camera, Plus, ChevronDown, Check } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Camera, Plus, ChevronDown, Check, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -8,6 +8,45 @@ function cn(...inputs) {
 }
 
 const AddVehicle = () => {
+    const [primaryImage, setPrimaryImage] = useState(null);
+    const [otherImages, setOtherImages] = useState([null, null, null, null]);
+    const primaryInputRef = useRef(null);
+    const otherInputsRef = useRef([]);
+
+    const handlePrimaryImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPrimaryImage(URL.createObjectURL(file));
+        }
+    };
+
+    const handleOtherImageUpload = (e, index) => {
+        const file = e.target.files[0];
+        if (file) {
+            const newOtherImages = [...otherImages];
+            newOtherImages[index] = URL.createObjectURL(file);
+            setOtherImages(newOtherImages);
+        }
+    };
+
+    const removePrimaryImage = (e) => {
+        e.stopPropagation();
+        setPrimaryImage(null);
+        if (primaryInputRef.current) {
+            primaryInputRef.current.value = '';
+        }
+    };
+
+    const removeOtherImage = (e, index) => {
+        e.stopPropagation();
+        const newOtherImages = [...otherImages];
+        newOtherImages[index] = null;
+        setOtherImages(newOtherImages);
+        if (otherInputsRef.current[index]) {
+            otherInputsRef.current[index].value = '';
+        }
+    };
+
     return (
         <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-700 pb-20">
             <div className="flex justify-between items-center bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
@@ -36,19 +75,72 @@ const AddVehicle = () => {
                         </div>
 
                         <div className="grid grid-cols-4 gap-4">
-                            <div className="col-span-2 aspect-[4/3] bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-gray-100 hover:border-blue-500/50 transition-all group">
-                                <div className="p-4 bg-white rounded-full group-hover:bg-blue-50 transition-colors">
-                                    <Camera className="text-gray-500 group-hover:text-blue-600" size={32} />
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-sm font-bold text-gray-900">Upload Primary Image</p>
-                                    <p className="text-[10px] text-gray-500 mt-1">High-res JPG or PNG (Max 5MB)</p>
-                                </div>
+                            <div 
+                                className="col-span-2 aspect-[4/3] bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-gray-100 hover:border-blue-500/50 transition-all group relative overflow-hidden"
+                                onClick={() => primaryInputRef.current?.click()}
+                            >
+                                {primaryImage ? (
+                                    <>
+                                        <img src={primaryImage} alt="Primary" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <p className="text-white text-sm font-bold">Change Image</p>
+                                        </div>
+                                        <button 
+                                            onClick={removePrimaryImage}
+                                            className="absolute top-2 right-2 p-1 bg-white/80 hover:bg-white rounded-full text-gray-700 transition-colors"
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="p-4 bg-white rounded-full group-hover:bg-blue-50 transition-colors">
+                                            <Camera className="text-gray-500 group-hover:text-blue-600" size={32} />
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-sm font-bold text-gray-900">Upload Primary Image</p>
+                                            <p className="text-[10px] text-gray-500 mt-1">High-res JPG or PNG (Max 5MB)</p>
+                                        </div>
+                                    </>
+                                )}
+                                <input 
+                                    type="file" 
+                                    ref={primaryInputRef} 
+                                    onChange={handlePrimaryImageUpload} 
+                                    accept="image/*" 
+                                    className="hidden" 
+                                />
                             </div>
 
-                            {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-gray-100 hover:border-blue-500/50 transition-all text-gray-600 hover:text-blue-600">
-                                    <Plus size={24} />
+                            {[0, 1, 2, 3].map((index) => (
+                                <div 
+                                    key={index} 
+                                    className="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-gray-100 hover:border-blue-500/50 transition-all text-gray-600 hover:text-blue-600 relative overflow-hidden group"
+                                    onClick={() => otherInputsRef.current[index]?.click()}
+                                >
+                                    {otherImages[index] ? (
+                                        <>
+                                            <img src={otherImages[index]} alt={`Gallery ${index + 1}`} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                <p className="text-white text-xs font-bold">Change</p>
+                                            </div>
+                                            <button 
+                                                onClick={(e) => removeOtherImage(e, index)}
+                                                className="absolute top-1 right-1 p-1 bg-white/80 hover:bg-white rounded-full text-gray-700 transition-colors"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <Plus size={24} />
+                                    )}
+                                    <input 
+                                        type="file" 
+                                        ref={(el) => (otherInputsRef.current[index] = el)} 
+                                        onChange={(e) => handleOtherImageUpload(e, index)} 
+                                        accept="image/*" 
+                                        className="hidden" 
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -118,14 +210,14 @@ const AddVehicle = () => {
                                 <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">Daily Rental Rate</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 font-bold">NPR</span>
-                                    <input type="text" placeholder="450" className="w-full bg-white border border-gray-200 py-4 pl-8 pr-4 text-sm font-bold" />
+                                    <input type="text" placeholder="450" className="w-full bg-white border border-gray-200 py-4 pl-14 pr-4 text-sm font-bold" />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-gray-600 uppercase tracking-wider">Security Deposit</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 font-bold">NPR</span>
-                                    <input type="text" placeholder="2500" className="w-full bg-white border border-gray-200 py-4 pl-8 pr-4 text-sm font-bold" />
+                                    <input type="text" placeholder="2500" className="w-full bg-white border border-gray-200 py-4 pl-14 pr-4 text-sm font-bold" />
                                 </div>
                             </div>
                             <div className="flex items-center justify-between pt-4 border-t border-gray-200">

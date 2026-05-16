@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     BarChart,
     Bar,
@@ -41,6 +41,41 @@ const revenueData = [
 ];
 
 const Dashboard = () => {
+    console.log('Dashboard: Component mounting');
+    const [selectedInterval, setSelectedInterval] = useState('Monthly');
+    
+    // Data sets for different time intervals
+    const revenueData = {
+        'Monthly': [
+            { name: 'JAN', value: 45000 },
+            { name: 'FEB', value: 52000 },
+            { name: 'MAR', value: 48000 },
+            { name: 'APR', value: 61000 },
+            { name: 'MAY', value: 55000 },
+            { name: 'JUN', value: 58000 },
+            { name: 'JUL', value: 62000 }
+        ],
+        'Weekly': [
+            { name: 'Week 1', value: 12500 },
+            { name: 'Week 2', value: 14800 },
+            { name: 'Week 3', value: 11200 },
+            { name: 'Week 4', value: 16800 }
+        ],
+        'Daily': [
+            { name: 'Mon', value: 2100 },
+            { name: 'Tue', value: 2450 },
+            { name: 'Wed', value: 1890 },
+            { name: 'Thu', value: 3200 },
+            { name: 'Fri', value: 2800 },
+            { name: 'Sat', value: 1650 },
+            { name: 'Sun', value: 980 }
+        ]
+    };
+    
+    const currentData = revenueData[selectedInterval];
+    
+    console.log('Dashboard: Rendering dashboard with interval:', selectedInterval);
+    
     return (
         <div className="space-y-8 animate-in fade-in duration-700">
             <div className="flex justify-between items-end">
@@ -110,7 +145,8 @@ const Dashboard = () => {
                             {['Monthly', 'Weekly', 'Daily'].map((tab) => (
                                 <button
                                     key={tab}
-                                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${tab === 'Monthly' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                    onClick={() => setSelectedInterval(tab)}
+                                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${selectedInterval === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
                                     {tab}
                                 </button>
@@ -120,7 +156,7 @@ const Dashboard = () => {
 
                     <div className="h-[300px] w-full mt-4">
                         <ResponsiveContainer width="99%" height="100%">
-                            <BarChart data={revenueData}>
+                            <BarChart data={currentData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
                                 <XAxis
                                     dataKey="name"
@@ -140,7 +176,7 @@ const Dashboard = () => {
                                     }}
                                 />
                                 <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-                                    {revenueData.map((entry, index) => (
+                                    {currentData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={index === 2 ? '#0f467e' : '#e2e8f0'} />
                                     ))}
                                 </Bar>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Search,
     ChevronDown,
@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 function cn(...inputs) {
     return twMerge(clsx(inputs));
@@ -65,6 +65,81 @@ const vehicles = [
 ];
 
 const Inventory = () => {
+    const [searchParams] = useSearchParams();
+    const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+    const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'All Brands');
+    const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All Categories');
+    const [filteredVehicles, setFilteredVehicles] = useState(vehicles);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 4;
+    
+    // Additional filter states
+    const [priceRange, setPriceRange] = useState(searchParams.get('priceRange') || 'all');
+    const [vehicleType, setVehicleType] = useState(searchParams.get('type') || 'all');
+    const [availability, setAvailability] = useState(searchParams.get('availability') || 'all');
+
+    useEffect(() => {
+        const params = new URLSearchParams();
+        if (searchTerm) params.set('search', searchTerm);
+        if (selectedBrand !== 'All Brands') params.set('brand', selectedBrand);
+        if (selectedCategory !== 'All Categories') params.set('category', selectedCategory);
+        if (currentPage > 1) params.set('page', currentPage);
+        if (priceRange !== 'all') params.set('priceRange', priceRange);
+        if (vehicleType !== 'all') params.set('type', vehicleType);
+        if (availability !== 'all') params.set('availability', availability);
+        
+        const filtered = vehicles.filter(vehicle => {
+            const matchesSearch = !searchTerm || 
+                vehicle.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                vehicle.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                vehicle.category.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesBrand = selectedBrand === 'All Brands' || vehicle.brand === selectedBrand;
+            const matchesCategory = selectedCategory === 'All Categories' || vehicle.category === selectedCategory;
+            
+            // Price range filter
+            const matchesPriceRange = priceRange === 'all' || (
+                priceRange === '0-500' && parseFloat(vehicle.price.replace('NPR ', '')) <= 500 ||
+                priceRange === '500-1000' && parseFloat(vehicle.price.replace('NPR ', '')) > 500 && parseFloat(vehicle.price.replace('NPR ', '')) <= 1000 ||
+                priceRange === '1000+' && parseFloat(vehicle.price.replace('NPR ', '')) > 1000
+            );
+            
+            // Vehicle type filter
+            const matchesVehicleType = vehicleType === 'all' || vehicle.type === vehicleType;
+            
+            // Availability filter
+            const matchesAvailability = availability === 'all' || (
+                availability === 'available' && vehicle.status === 'AVAILABLE' ||
+                availability === 'unavailable' && vehicle.status === 'IN RENTAL' ||
+                availability === 'maintenance' && vehicle.status === 'MAINTENANCE'
+            );
+            
+            return matchesSearch && matchesBrand && matchesCategory && matchesPriceRange && matchesVehicleType && matchesAvailability;
+        });
+        
+        setFilteredVehicles(filtered);
+    }, [searchTerm, selectedBrand, selectedCategory, currentPage, priceRange, vehicleType, availability]);
+
+    const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedVehicles = filteredVehicles.slice(startIndex, endIndex);
+    
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+    
+    const handlePageClick = (page) => {
+        setCurrentPage(page);
+    };
+
     return (
         <div className="space-y-6 animate-in fade-in duration-700">
             <div className="flex justify-between items-center bg-white border border-gray-200 p-6 rounded-2xl shadow-sm">
@@ -97,12 +172,18 @@ const Inventory = () => {
                         <input
                             type="text"
                             placeholder="Search by Model, category, P/D..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full bg-gray-50 border border-gray-200 pl-10 pr-4 py-2 text-xs"
                         />
                     </div>
                     <div className="flex gap-3">
                         <div className="relative">
-                            <select className="bg-gray-50 border border-gray-200 pl-3 pr-8 py-2 text-xs rounded-lg appearance-none cursor-pointer text-gray-600">
+                            <select 
+                                value={selectedBrand}
+                                onChange={(e) => setSelectedBrand(e.target.value)}
+                                className="bg-gray-50 border border-gray-200 pl-3 pr-8 py-2 text-xs rounded-lg appearance-none cursor-pointer text-gray-600"
+                            >
                                 <option>All Brands</option>
                                 <option>Tesla</option>
                                 <option>Porsche</option>
@@ -110,10 +191,53 @@ const Inventory = () => {
                             <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
                         </div>
                         <div className="relative">
-                            <select className="bg-gray-50 border border-gray-200 pl-3 pr-8 py-2 text-xs rounded-lg appearance-none cursor-pointer text-gray-600">
+                            <select 
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                className="bg-gray-50 border border-gray-200 pl-3 pr-8 py-2 text-xs rounded-lg appearance-none cursor-pointer text-gray-600"
+                            >
                                 <option>All Categories</option>
                                 <option>Suv</option>
                                 <option>Sedan</option>
+                            </select>
+                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
+                        </div>
+                        <div className="relative">
+                            <select 
+                                value={priceRange}
+                                onChange={(e) => setPriceRange(e.target.value)}
+                                className="bg-gray-50 border border-gray-200 pl-3 pr-8 py-2 text-xs rounded-lg appearance-none cursor-pointer text-gray-600"
+                            >
+                                <option value="all">All Prices</option>
+                                <option value="0-500">NPR 0-500</option>
+                                <option value="500-1000">NPR 500-1000</option>
+                                <option value="1000+">NPR 1000+</option>
+                            </select>
+                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
+                        </div>
+                        <div className="relative">
+                            <select 
+                                value={vehicleType}
+                                onChange={(e) => setVehicleType(e.target.value)}
+                                className="bg-gray-50 border border-gray-200 pl-3 pr-8 py-2 text-xs rounded-lg appearance-none cursor-pointer text-gray-600"
+                            >
+                                <option value="all">All Types</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Gasoline">Gasoline</option>
+                                <option value="Hybrid">Hybrid</option>
+                            </select>
+                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
+                        </div>
+                        <div className="relative">
+                            <select 
+                                value={availability}
+                                onChange={(e) => setAvailability(e.target.value)}
+                                className="bg-gray-50 border border-gray-200 pl-3 pr-8 py-2 text-xs rounded-lg appearance-none cursor-pointer text-gray-600"
+                            >
+                                <option value="all">All Status</option>
+                                <option value="available">Available</option>
+                                <option value="unavailable">Unavailable</option>
+                                <option value="maintenance">Maintenance</option>
                             </select>
                             <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
                         </div>
@@ -138,7 +262,7 @@ const Inventory = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            {vehicles.map((v) => (
+                            {paginatedVehicles.map((v) => (
                                 <tr key={v.id} className="hover:bg-gray-50 transition-colors group">
                                     <td className="px-6 py-4">
                                         <div className="w-20 aspect-video bg-gray-50 rounded-lg overflow-hidden border border-gray-200">
@@ -177,15 +301,41 @@ const Inventory = () => {
 
                 {/* Pagination */}
                 <div className="p-6 border-t border-gray-200 flex items-center justify-between">
-                    <p className="text-xs text-gray-500 font-medium">Showing <span className="text-gray-900">1 to 4</span> of 128 vehicles</p>
+                    <p className="text-xs text-gray-500 font-medium">Showing <span className="text-gray-900">{startIndex + 1} to {Math.min(endIndex, filteredVehicles.length)}</span> of {filteredVehicles.length} vehicles</p>
                     <div className="flex gap-1">
-                        <button className="p-1.5 text-gray-600 hover:text-gray-900"><ChevronLeft size={16} /></button>
-                        <button className="w-8 h-8 rounded-lg bg-blue-600 text-white text-xs font-bold">1</button>
-                        <button className="w-8 h-8 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-xs font-bold">2</button>
-                        <button className="w-8 h-8 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-xs font-bold">3</button>
-                        <span className="px-2 text-gray-500">...</span>
-                        <button className="w-8 h-8 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 text-xs font-bold">32</button>
-                        <button className="p-1.5 text-gray-600 hover:text-gray-900"><ChevronRight size={16} /></button>
+                        <button 
+                            onClick={handlePrevious}
+                            disabled={currentPage === 1}
+                            className="p-1.5 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <ChevronLeft size={16} />
+                        </button>
+                        {[...Array(totalPages)].map((_, index) => {
+                            const pageNumber = index + 1;
+                            const isActive = pageNumber === currentPage;
+                            return (
+                                <button
+                                    key={pageNumber}
+                                    onClick={() => handlePageClick(pageNumber)}
+                                    className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                                        isActive 
+                                            ? 'bg-blue-600 text-white' 
+                                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                    }`}
+                                    disabled={pageNumber > totalPages}
+                                >
+                                    {pageNumber}
+                                </button>
+                            );
+                        })}
+                        {currentPage < totalPages - 1 && <span className="px-2 text-gray-500">...</span>}
+                        <button 
+                            onClick={handleNext}
+                            disabled={currentPage === totalPages}
+                            className="p-1.5 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <ChevronRight size={16} />
+                        </button>
                     </div>
                 </div>
             </div>

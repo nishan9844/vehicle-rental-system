@@ -37,7 +37,7 @@ const Header = ({ title }) => {
                     >
                         <div className="text-right">
                             <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                                {user?.name || 'Admin User'}
+                                {user?.name || 'Nishan'}
                             </p>
                             <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">
                                 {user?.role || 'Administrator'}
