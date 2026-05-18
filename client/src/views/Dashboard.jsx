@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Bar,
@@ -133,11 +133,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchDashboard();
-  }, []);
-
-  async function fetchDashboard() {
+  const fetchDashboard = useCallback(async () => {
     setLoading(true);
     setError("");
 
@@ -163,7 +159,11 @@ const Dashboard = () => {
     }
 
     setLoading(false);
-  }
+  }, []);
+
+  useEffect(() => {
+    Promise.resolve().then(fetchDashboard);
+  }, [fetchDashboard]);
 
   const metrics = useMemo(() => {
     const availableVehicles = vehicles.filter((vehicle) => normalizeStatus(vehicle.status, "") === "available").length;

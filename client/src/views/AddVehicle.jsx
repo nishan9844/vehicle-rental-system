@@ -11,9 +11,11 @@ const AddVehicle = () => {
     const [error, setError] = useState("");
 
     function handleChange(event) {
+        const { name, value, type, checked } = event.target;
         setFormData((current) => ({
             ...current,
-            [event.target.name]: event.target.value,
+            [name]: type === "checkbox" ? checked : value,
+            ...(name === "vehicle_type" ? { category: value } : {}),
         }));
         setError("");
     }

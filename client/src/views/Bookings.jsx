@@ -105,6 +105,7 @@ function normalizeBooking(booking) {
   ]);
 
   const amount = pickValue(booking, [
+    "total_price",
     "amount",
     "total_amount",
     "totalAmount",
@@ -136,13 +137,13 @@ function normalizeBooking(booking) {
     ),
     vehicle: pickValue(
       booking,
-      ["vehicle_name", "vehicleName", "vehicle"],
+      ["vehicle_name", "vehicleName"],
       pickValue(vehicle, ["name"], "Unknown vehicle")
     ),
     vehicleImage: pickValue(
       booking,
-      ["vehicle_image", "vehicleImage", "image"],
-      pickValue(vehicle, ["image"], fallbackImage)
+      ["vehicle_image", "vehicleImage", "image_url", "image"],
+      pickValue(vehicle, ["image_url", "image"], fallbackImage)
     ),
     pickupDate,
     returnDate,
@@ -314,8 +315,8 @@ const Bookings = () => {
         {(notice || error) && (
           <div
             className={`mb-6 rounded-lg border px-4 py-3 text-sm ${error
-                ? "border-red-200 bg-red-50 text-red-700"
-                : "border-emerald-200 bg-emerald-50 text-emerald-700"
+              ? "border-red-200 bg-red-50 text-red-700"
+              : "border-emerald-200 bg-emerald-50 text-emerald-700"
               }`}
           >
             {error || notice}

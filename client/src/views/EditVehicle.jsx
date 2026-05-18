@@ -8,12 +8,16 @@ function mapVehicleToForm(vehicle) {
     return {
         name: vehicle?.name ?? "",
         brand: vehicle?.brand ?? "",
-        type: vehicle?.type ?? "",
-        category: vehicle?.category ?? "",
+        vehicle_type: vehicle?.vehicle_type ?? vehicle?.category ?? "4 Wheeler",
+        fuel_type: vehicle?.fuel_type ?? vehicle?.type ?? "Petrol",
+        category: vehicle?.vehicle_type ?? vehicle?.category ?? "4 Wheeler",
+        transmission: vehicle?.transmission ?? "Automatic",
         seats: vehicle?.seats ?? "",
-        price: vehicle?.price ?? "",
+        price_per_day: vehicle?.price_per_day ?? vehicle?.price ?? "",
         status: vehicle?.status ?? "AVAILABLE",
-        image: vehicle?.image ?? "",
+        image_url: vehicle?.image_url ?? vehicle?.image ?? "",
+        description: vehicle?.description ?? "",
+        is_published: vehicle?.is_published !== false,
     };
 }
 
@@ -56,9 +60,11 @@ const EditVehicle = () => {
     }, [id]);
 
     function handleChange(event) {
+        const { name, value, type, checked } = event.target;
         setFormData((current) => ({
             ...current,
-            [event.target.name]: event.target.value,
+            [name]: type === "checkbox" ? checked : value,
+            ...(name === "vehicle_type" ? { category: value } : {}),
         }));
         setError("");
     }

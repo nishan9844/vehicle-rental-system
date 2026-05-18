@@ -4,24 +4,35 @@ import { ArrowLeft, Save } from "lucide-react";
 
 const statusOptions = [
     "AVAILABLE",
-    "IN RENTAL",
+    "RENTED",
     "MAINTENANCE",
 ];
 
 const categoryOptions = [
-    "Car",
-    "Bike",
-    "SUV",
-    "Van",
-    "Truck",
+    "4 Wheeler",
+    "2 Wheeler",
     "EV",
 ];
 
 const typeOptions = [
     "Petrol",
+    "Gasoline",
     "Diesel",
     "Electric",
     "Hybrid",
+];
+
+const fuelOptions = [
+    "Petrol",
+    "Gasoline",
+    "Diesel",
+    "Electric",
+    "Hybrid",
+];
+
+const transmissionOptions = [
+    "Automatic",
+    "Manual",
 ];
 
 function VehicleForm({
@@ -34,9 +45,9 @@ function VehicleForm({
     error = "",
 }) {
     const imagePreview = useMemo(() => {
-        return formData.image?.trim()
+        return formData.image_url?.trim()
             || "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&h=600&fit=crop";
-    }, [formData.image]);
+    }, [formData.image_url]);
 
     return (
         <div className="space-y-6">
@@ -191,8 +202,8 @@ function VehicleForm({
                             </span>
                             <input
                                 type="url"
-                                name="image"
-                                value={formData.image}
+                                name="image_url"
+                                value={formData.image_url}
                                 onChange={onChange}
                                 required
                                 className="w-full rounded-lg border border-gray-300 px-3 py-3 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
