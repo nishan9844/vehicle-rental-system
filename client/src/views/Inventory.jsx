@@ -9,7 +9,7 @@ function statusClass(status) {
     switch (status) {
         case "AVAILABLE":
             return "bg-emerald-50 text-emerald-700 border-emerald-200";
-        case "IN RENTAL":
+        case "RENTED":
             return "bg-blue-50 text-blue-700 border-blue-200";
         case "MAINTENANCE":
             return "bg-amber-50 text-amber-700 border-amber-200";
@@ -83,7 +83,8 @@ const Inventory = () => {
             return [
                 vehicle.name,
                 vehicle.brand,
-                vehicle.type,
+                vehicle.vehicle_type,
+                vehicle.fuel_type,
                 vehicle.category,
                 vehicle.status,
             ].some((value) => String(value || "").toLowerCase().includes(term));
@@ -114,8 +115,8 @@ const Inventory = () => {
             {(notice || error) && (
                 <div
                     className={`rounded-lg border px-4 py-3 text-sm ${error
-                            ? "border-red-200 bg-red-50 text-red-700"
-                            : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        ? "border-red-200 bg-red-50 text-red-700"
+                        : "border-emerald-200 bg-emerald-50 text-emerald-700"
                         }`}
                 >
                     {error || notice}
@@ -160,7 +161,7 @@ const Inventory = () => {
                         >
                             <div className="aspect-[16/10] bg-gray-100">
                                 <img
-                                    src={vehicle.image || fallbackImage}
+                                    src={vehicle.image_url || fallbackImage}
                                     alt={vehicle.name}
                                     className="h-full w-full object-cover"
                                     onError={(event) => {
@@ -176,7 +177,7 @@ const Inventory = () => {
                                             {vehicle.name}
                                         </h2>
                                         <p className="text-sm text-gray-600">
-                                            {vehicle.brand} {vehicle.category ? `- ${vehicle.category}` : ""}
+                                            {vehicle.brand} {vehicle.vehicle_type ? `- ${vehicle.vehicle_type}` : ""}
                                         </p>
                                     </div>
                                     <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${statusClass(vehicle.status)}`}>
@@ -187,7 +188,7 @@ const Inventory = () => {
                                 <div className="mt-5 grid grid-cols-3 gap-3 rounded-lg bg-gray-50 p-3 text-sm">
                                     <div>
                                         <p className="text-xs font-semibold uppercase text-gray-500">Type</p>
-                                        <p className="font-medium text-gray-900">{vehicle.type || "N/A"}</p>
+                                        <p className="font-medium text-gray-900">{vehicle.vehicle_type || "N/A"}</p>
                                     </div>
                                     <div>
                                         <p className="text-xs font-semibold uppercase text-gray-500">Seats</p>
@@ -195,7 +196,7 @@ const Inventory = () => {
                                     </div>
                                     <div>
                                         <p className="text-xs font-semibold uppercase text-gray-500">Price</p>
-                                        <p className="font-medium text-gray-900">NPR {vehicle.price || 0}</p>
+                                        <p className="font-medium text-gray-900">NPR {vehicle.price_per_day || 0}</p>
                                     </div>
                                 </div>
 

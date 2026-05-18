@@ -11,7 +11,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -26,15 +26,15 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     const result = await login(credentials);
-    
+
     if (result.success) {
       navigate('/');
     } else {
       setError(result.error);
     }
-    
+
     setLoading(false);
   };
 
@@ -69,7 +69,7 @@ const Login = () => {
                   onChange={handleChange}
                   required
                   className="w-full pl-10 pr-3 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="admin@vehiclerental.com"
+                  placeholder="admin@example.com"
                 />
               </div>
             </div>
@@ -123,12 +123,9 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-blue-600 text-sm font-medium mb-1">Demo Credentials:</p>
-            <p className="text-gray-500 text-xs">Email: admin@vehiclerental.com</p>
-            <p className="text-gray-500 text-xs">Password: admin123</p>
-          </div>
+          <p className="mt-6 text-center text-xs text-gray-500">
+            Use the admin account provided by your system administrator.
+          </p>
         </div>
       </div>
     </div>
@@ -136,3 +133,4 @@ const Login = () => {
 };
 
 export default Login;
+

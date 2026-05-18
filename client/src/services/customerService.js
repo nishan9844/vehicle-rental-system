@@ -1,51 +1,76 @@
 import { supabase } from "../lib/supabase";
+import { localCreate, localDelete, localGet, localList, localUpdate, shouldUseLocalData } from "./localStore";
 
 export async function getCustomers() {
-    const { data, error } = await supabase
-        .from("customers")
-        .select("*")
-        .order("id", { ascending: false });
+    if (shouldUseLocalData()) return localList("customers");
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("customers")
+            .select("*")
+            .order("id", { ascending: false });
 
-    return data || [];
+        if (error) throw error;
+
+        return data || [];
+    } catch {
+        return localList("customers");
+    }
 }
 
 export async function getCustomerById(id) {
-    const { data, error } = await supabase
-        .from("customers")
-        .select("*")
-        .eq("id", id)
-        .single();
+    if (shouldUseLocalData()) return localGet("customers", id);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("customers")
+            .select("*")
+            .eq("id", id)
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localGet("customers", id);
+    }
 }
 
 export async function createCustomer(customer) {
-    const { data, error } = await supabase
-        .from("customers")
-        .insert([customer])
-        .select()
-        .single();
+    if (shouldUseLocalData()) return localCreate("customers", customer);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("customers")
+            .insert([customer])
+            .select()
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localCreate("customers", customer);
+    }
 }
 
 export async function updateCustomer(id, customer) {
-    const { data, error } = await supabase
-        .from("customers")
-        .update(customer)
-        .eq("id", id)
-        .select()
-        .single();
+    if (shouldUseLocalData()) return localUpdate("customers", id, customer);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("customers")
+            .update(customer)
+            .eq("id", id)
+            .select()
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localUpdate("customers", id, customer);
+    }
 }
 
 export async function updateCustomerStatus(id, status) {
@@ -57,12 +82,18 @@ export async function updateCustomerVerification(id, verification) {
 }
 
 export async function deleteCustomer(id) {
-    const { error } = await supabase
-        .from("customers")
-        .delete()
-        .eq("id", id);
+    if (shouldUseLocalData()) return localDelete("customers", id);
 
-    if (error) throw error;
+    try {
+        const { error } = await supabase
+            .from("customers")
+            .delete()
+            .eq("id", id);
 
-    return true;
+        if (error) throw error;
+
+        return true;
+    } catch {
+        return localDelete("customers", id);
+    }
 }

@@ -1,51 +1,76 @@
 import { supabase } from "../lib/supabase";
+import { localCreate, localDelete, localGet, localList, localUpdate, shouldUseLocalData } from "./localStore";
 
 export async function getPayments() {
-    const { data, error } = await supabase
-        .from("payments")
-        .select("*")
-        .order("id", { ascending: false });
+    if (shouldUseLocalData()) return localList("payments");
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("payments")
+            .select("*")
+            .order("id", { ascending: false });
 
-    return data || [];
+        if (error) throw error;
+
+        return data || [];
+    } catch {
+        return localList("payments");
+    }
 }
 
 export async function getPaymentById(id) {
-    const { data, error } = await supabase
-        .from("payments")
-        .select("*")
-        .eq("id", id)
-        .single();
+    if (shouldUseLocalData()) return localGet("payments", id);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("payments")
+            .select("*")
+            .eq("id", id)
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localGet("payments", id);
+    }
 }
 
 export async function createPayment(payment) {
-    const { data, error } = await supabase
-        .from("payments")
-        .insert([payment])
-        .select()
-        .single();
+    if (shouldUseLocalData()) return localCreate("payments", payment);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("payments")
+            .insert([payment])
+            .select()
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localCreate("payments", payment);
+    }
 }
 
 export async function updatePayment(id, payment) {
-    const { data, error } = await supabase
-        .from("payments")
-        .update(payment)
-        .eq("id", id)
-        .select()
-        .single();
+    if (shouldUseLocalData()) return localUpdate("payments", id, payment);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("payments")
+            .update(payment)
+            .eq("id", id)
+            .select()
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localUpdate("payments", id, payment);
+    }
 }
 
 export async function updatePaymentStatus(id, status) {
@@ -53,12 +78,18 @@ export async function updatePaymentStatus(id, status) {
 }
 
 export async function deletePayment(id) {
-    const { error } = await supabase
-        .from("payments")
-        .delete()
-        .eq("id", id);
+    if (shouldUseLocalData()) return localDelete("payments", id);
 
-    if (error) throw error;
+    try {
+        const { error } = await supabase
+            .from("payments")
+            .delete()
+            .eq("id", id);
 
-    return true;
+        if (error) throw error;
+
+        return true;
+    } catch {
+        return localDelete("payments", id);
+    }
 }

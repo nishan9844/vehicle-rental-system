@@ -1,51 +1,76 @@
 import { supabase } from "../lib/supabase";
+import { localCreate, localDelete, localGet, localList, localUpdate, shouldUseLocalData } from "./localStore";
 
 export async function getBookings() {
-    const { data, error } = await supabase
-        .from("bookings")
-        .select("*")
-        .order("id", { ascending: false });
+    if (shouldUseLocalData()) return localList("bookings");
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("bookings")
+            .select("*, vehicles(name, brand, image_url, price_per_day)")
+            .order("id", { ascending: false });
 
-    return data || [];
+        if (error) throw error;
+
+        return data || [];
+    } catch {
+        return localList("bookings");
+    }
 }
 
 export async function getBookingById(id) {
-    const { data, error } = await supabase
-        .from("bookings")
-        .select("*")
-        .eq("id", id)
-        .single();
+    if (shouldUseLocalData()) return localGet("bookings", id);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("bookings")
+            .select("*, vehicles(name, brand, image_url, price_per_day)")
+            .eq("id", id)
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localGet("bookings", id);
+    }
 }
 
 export async function createBooking(booking) {
-    const { data, error } = await supabase
-        .from("bookings")
-        .insert([booking])
-        .select()
-        .single();
+    if (shouldUseLocalData()) return localCreate("bookings", booking);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("bookings")
+            .insert([booking])
+            .select()
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localCreate("bookings", booking);
+    }
 }
 
 export async function updateBooking(id, booking) {
-    const { data, error } = await supabase
-        .from("bookings")
-        .update(booking)
-        .eq("id", id)
-        .select()
-        .single();
+    if (shouldUseLocalData()) return localUpdate("bookings", id, booking);
 
-    if (error) throw error;
+    try {
+        const { data, error } = await supabase
+            .from("bookings")
+            .update(booking)
+            .eq("id", id)
+            .select()
+            .single();
 
-    return data;
+        if (error) throw error;
+
+        return data;
+    } catch {
+        return localUpdate("bookings", id, booking);
+    }
 }
 
 export async function updateBookingStatus(id, status) {
@@ -53,12 +78,18 @@ export async function updateBookingStatus(id, status) {
 }
 
 export async function deleteBooking(id) {
-    const { error } = await supabase
-        .from("bookings")
-        .delete()
-        .eq("id", id);
+    if (shouldUseLocalData()) return localDelete("bookings", id);
 
-    if (error) throw error;
+    try {
+        const { error } = await supabase
+            .from("bookings")
+            .delete()
+            .eq("id", id);
 
-    return true;
+        if (error) throw error;
+
+        return true;
+    } catch {
+        return localDelete("bookings", id);
+    }
 }
