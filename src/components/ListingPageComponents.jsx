@@ -1,7 +1,42 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import defaultCarImg from '../assets/images/4wheeler.png';
+import defaultBikeImg from '../assets/images/2wheeler.png';
+import defaultEvImg from '../assets/images/ev.png';
+import bmwX7Img from '../assets/images/bmw_x7_1774791305841.png';
+import bulletBikeImg from '../assets/images/bullet_bike_1774791285776.png';
+import teslaModelSImg from '../assets/images/tesla_model_s_1774791127857.png';
 
-// ── Filter Sidebar ────────────────────────────────────────────────────────────
+const getVehicleImage = ({ brand, name, vehicle_type, fuel_type, image_url }) => {
+  if (image_url) return image_url;
+
+  const vehicleText = `${brand || ''} ${name || ''} ${vehicle_type || ''} ${fuel_type || ''}`.toLowerCase();
+
+  if (vehicleText.includes('tesla') || vehicleText.includes('model s')) {
+    return teslaModelSImg;
+  }
+
+  if (vehicleText.includes('bmw') || vehicleText.includes('x7')) {
+    return bmwX7Img;
+  }
+
+  if (
+    vehicleText.includes('bullet') ||
+    vehicleText.includes('royal enfield') ||
+    vehicleText.includes('yamaha') ||
+    vehicleText.includes('bike') ||
+    vehicleText.includes('2 wheeler')
+  ) {
+    return bulletBikeImg || defaultBikeImg;
+  }
+
+  if (vehicleText.includes('electric') || vehicleText.includes('ev')) {
+    return defaultEvImg;
+  }
+
+  return defaultCarImg;
+};
+
 export const FilterSidebar = ({
   allBrands,
   selectedBrands,
@@ -21,7 +56,6 @@ export const FilterSidebar = ({
   <aside className="filter-sidebar">
     <h3>Filters</h3>
 
-    {/* Vehicle Type */}
     <div className="filter-section">
       <span className="filter-label">Vehicle Type</span>
       <select
@@ -35,7 +69,6 @@ export const FilterSidebar = ({
       </select>
     </div>
 
-    {/* Brand */}
     <div className="filter-section">
       <span className="filter-label">Brand</span>
       <div className="checkbox-group">
@@ -55,7 +88,6 @@ export const FilterSidebar = ({
       </div>
     </div>
 
-    {/* Price Range */}
     <div className="filter-section">
       <span className="filter-label">Max Price Per Day</span>
       <input
@@ -74,7 +106,6 @@ export const FilterSidebar = ({
       </div>
     </div>
 
-    {/* Transmission */}
     <div className="filter-section">
       <span className="filter-label">Transmission</span>
       <select
@@ -87,7 +118,6 @@ export const FilterSidebar = ({
       </select>
     </div>
 
-    {/* Available Only */}
     <div className="toggle-container">
       <span>Show Available Only</span>
       <input
@@ -98,7 +128,6 @@ export const FilterSidebar = ({
       />
     </div>
 
-    {/* Clear Filters */}
     {hasActiveFilters && (
       <button
         onClick={onClearFilters}
@@ -115,11 +144,10 @@ export const FilterSidebar = ({
           cursor: 'pointer',
         }}
       >
-        ✕ Clear All Filters
+        Clear All Filters
       </button>
     )}
 
-    {/* Mobile Only Apply Filters Button */}
     {onCloseMobile && (
       <button
         className="btn-apply-filters"
@@ -132,7 +160,6 @@ export const FilterSidebar = ({
   </aside>
 );
 
-// ── Car Card ──────────────────────────────────────────────────────────────────
 export const CarCard = ({
   id,
   brand,
@@ -144,57 +171,45 @@ export const CarCard = ({
   seats,
   image_url,
   status,
-}) => (
-  <div className="car-card">
-    <div className="car-image-container">
-      {status === 'AVAILABLE' && <span className="badge">AVAILABLE NOW</span>}
-      {image_url ? (
+}) => {
+  const displayImage = getVehicleImage({ brand, name, vehicle_type, fuel_type, image_url });
+
+  return (
+    <div className="car-card">
+      <div className="car-image-container">
+        {status === 'AVAILABLE' && <span className="badge">AVAILABLE NOW</span>}
         <img
-          src={image_url}
+          src={displayImage}
           alt={name}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           onError={(e) => {
-            e.target.style.display = 'none';
-            e.target.nextSibling.style.display = 'flex';
+            e.currentTarget.src = vehicle_type === '2 Wheeler' ? defaultBikeImg : defaultCarImg;
           }}
         />
-      ) : null}
-      <div
-        style={{
-          display: image_url ? 'none' : 'flex',
-          width: '100%',
-          height: '100%',
-          background: '#f1f5f9',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#94a3b8',
-          fontSize: '0.85rem',
-        }}
-      >
-        No Image
+      </div>
+
+      <div className="car-info">
+        <div className="price-tag">
+          <span className="price-value">NPR {price_per_day?.toLocaleString()}</span>
+          <span className="price-unit">/ day</span>
+        </div>
+        <span className="car-brand">{brand}</span>
+        <h4 className="car-name">{name}</h4>
+        <div className="specs-row">
+          {vehicle_type && <span>{vehicle_type}</span>}
+          {fuel_type && <span>{fuel_type}</span>}
+          {transmission && <span>{transmission}</span>}
+          {seats && <span>{seats} Seats</span>}
+        </div>
+        <div className="card-actions">
+          <Link to={`/details/${id}`} style={{ width: '100%' }}>
+            <button className="btn-details" style={{ width: '100%' }}>View Details</button>
+          </Link>
+          <Link to={`/booking/${id}`} style={{ width: '100%' }}>
+            <button className="btn-book" style={{ width: '100%' }}>Book Now</button>
+          </Link>
+        </div>
       </div>
     </div>
-    <div className="car-info">
-      <div className="price-tag">
-        <span className="price-value">NPR {price_per_day?.toLocaleString()}</span>
-        <span className="price-unit">/ day</span>
-      </div>
-      <span className="car-brand">{brand}</span>
-      <h4 className="car-name">{name}</h4>
-      <div className="specs-row">
-        {vehicle_type && <span>🚗 {vehicle_type}</span>}
-        {fuel_type && <span>⛽ {fuel_type}</span>}
-        {transmission && <span>⚙ {transmission}</span>}
-        {seats && <span>👥 {seats} Seats</span>}
-      </div>
-      <div className="card-actions">
-        <Link to={`/details/${id}`} style={{ width: '100%' }}>
-          <button className="btn-details" style={{ width: '100%' }}>View Details</button>
-        </Link>
-        <Link to={`/booking/${id}`} style={{ width: '100%' }}>
-          <button className="btn-book" style={{ width: '100%' }}>Book Now</button>
-        </Link>
-      </div>
-    </div>
-  </div>
-);
+  );
+};

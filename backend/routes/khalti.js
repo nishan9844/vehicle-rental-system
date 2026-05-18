@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const { createClient } = require('@supabase/supabase-js');
 
 const router = express.Router();
 
@@ -17,6 +18,50 @@ function khaltiHeaders() {
         Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
         'Content-Type': 'application/json',
     };
+}
+
+function formatErrorDetails(details) {
+    if (!details) return '';
+    return typeof details === 'string' ? details : JSON.stringify(details);
+}
+
+function getSupabaseAdmin() {
+    const url = process.env.SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!url || !serviceRoleKey || serviceRoleKey === 'your_service_role_key_here') {
+        return null;
+    }
+
+    return createClient(url, serviceRoleKey, {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+        },
+    });
+}
+
+async function markBookingPaid(bookingId) {
+    const supabase = getSupabaseAdmin();
+
+    if (!supabase) {
+        return {
+            updated: false,
+            warning: 'SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not configured; frontend callback will try the booking update.',
+        };
+    }
+
+    const { error } = await supabase
+        .from('bookings')
+        .update({
+            status: 'confirmed',
+            payment_status: 'paid',
+        })
+        .eq('id', bookingId);
+
+    if (error) throw error;
+
+    return { updated: true };
 }
 
 router.post('/initiate', async (req, res) => {
@@ -76,9 +121,14 @@ router.post('/initiate', async (req, res) => {
     } catch (err) {
         console.error('Khalti initiate error:', err?.response?.data || err.message);
 
+        const details = err?.response?.data || err.message;
+        const detailsText = formatErrorDetails(details);
+
         return res.status(502).json({
-            message: 'Failed to initiate Khalti payment',
-            details: err?.response?.data || err.message,
+            message: detailsText
+                ? `Failed to initiate Khalti payment: ${detailsText}`
+                : 'Failed to initiate Khalti payment',
+            details,
         });
     }
 });
@@ -88,9 +138,7 @@ router.post('/verify', async (req, res) => {
     const headers = khaltiHeaders();
 
     if (!pidx) {
-        return res.status(400).json({
-            message: 'pidx is required',
-        });
+        return res.status(400).json({ message: 'pidx is required' });
     }
 
     if (!headers) {
@@ -114,12 +162,17 @@ router.post('/verify', async (req, res) => {
         } = response.data;
 
         if (status === 'Completed') {
+            const booking_id = purchase_order_id;
+            const dbResult = await markBookingPaid(booking_id);
+
             return res.json({
                 success: true,
                 status,
                 transaction_id,
-                booking_id: purchase_order_id,
+                booking_id,
                 amount_paisa: total_amount,
+                backend_update: dbResult.updated,
+                warning: dbResult.warning,
             });
         }
 
@@ -129,11 +182,16 @@ router.post('/verify', async (req, res) => {
             message: `Payment not completed. Status: ${status}`,
         });
     } catch (err) {
-        console.error('Khalti lookup error:', err?.response?.data || err.message);
+        console.error('Khalti lookup/update error:', err?.response?.data || err.message);
+
+        const details = err?.response?.data || err.message;
+        const detailsText = formatErrorDetails(details);
 
         return res.status(502).json({
-            message: 'Failed to verify Khalti payment',
-            details: err?.response?.data || err.message,
+            message: detailsText
+                ? `Failed to verify Khalti payment: ${detailsText}`
+                : 'Failed to verify Khalti payment',
+            details,
         });
     }
 });

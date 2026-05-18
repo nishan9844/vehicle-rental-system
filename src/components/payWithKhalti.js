@@ -1,23 +1,39 @@
-const config = {
-    publicKey: "YOUR_PUBLIC_KEY",
-    productIdentity: bookingId,
-    productName: "Vehicle Booking",
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
-    eventHandler: {
-        async onSuccess(payload) {
-            const res = await axios.post("http://localhost:5000/verify-payment", {
-                token: payload.token,
-                amount: payload.amount,
-            });
+export const payWithKhalti = async ({
+    bookingId,
+    amount,
+    customerName,
+    customerEmail,
+    customerPhone,
+}) => {
+    const amountNpr = Number(amount);
 
-            if (res.data.success) {
-                await supabase
-                    .from("bookings")
-                    .update({ payment_status: "paid" })
-                    .eq("id", bookingId);
+    if (!bookingId) {
+        throw new Error("bookingId is required to initiate Khalti payment.");
+    }
 
-                alert("Payment successful");
-            }
-        },
-    },
+    if (!Number.isFinite(amountNpr) || amountNpr <= 0) {
+        throw new Error("A valid positive amount is required for Khalti payment.");
+    }
+
+    const res = await fetch(`${BACKEND_URL}/api/khalti/initiate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            booking_id: bookingId,
+            amount_npr: amountNpr,
+            customer_name: customerName || "Customer",
+            customer_email: customerEmail || "",
+            customer_phone: customerPhone || "",
+        }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.payment_url) {
+        throw new Error(data.message || data.error || "Failed to initiate Khalti payment.");
+    }
+
+    window.location.href = data.payment_url;
 };

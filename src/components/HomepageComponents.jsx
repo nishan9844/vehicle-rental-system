@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight, FaStar, FaSearch } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaStar, FaSearch, FaComments } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import ChatbotModal from "./ChatbotModal";
@@ -73,26 +73,16 @@ export function SearchBar() {
                     Browse All Vehicles
                 </Link>
 
-                <button
-                    type="button"
-                    onClick={() => setChatOpen(true)}
-                    className="search-btn"
-                    style={{
-                        border: "none",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyItems: "center",
-                        padding: "16px 32px",
-                        fontSize: "18px",
-                        borderRadius: "50px",
-                        backgroundColor: "#3b82f6",
-                        color: "#fff",
-                        cursor: "pointer",
-                    }}
-                >
-                    Ask Agents
-                </button>
             </div>
+
+            <button
+                type="button"
+                onClick={() => setChatOpen(true)}
+                className="chatbot-floating-button"
+                aria-label="Open rental support chat"
+            >
+                <FaComments />
+            </button>
 
             <ChatbotModal open={chatOpen} onClose={() => setChatOpen(false)} />
         </>
@@ -110,7 +100,7 @@ export function VehicleCategories() {
 
                 <div className="category-grid">
                     <Link
-                        to="/listing"
+                        to="/listing?vehicleType=4%20Wheeler"
                         className="category-item"
                         style={{ textDecoration: "none", color: "inherit" }}
                     >
@@ -123,7 +113,7 @@ export function VehicleCategories() {
                     </Link>
 
                     <Link
-                        to="/listing"
+                        to="/listing?vehicleType=2%20Wheeler"
                         className="category-item"
                         style={{ textDecoration: "none", color: "inherit" }}
                     >
@@ -136,7 +126,7 @@ export function VehicleCategories() {
                     </Link>
 
                     <Link
-                        to="/listing"
+                        to="/listing?vehicleType=EV"
                         className="category-item"
                         style={{ textDecoration: "none", color: "inherit" }}
                     >
@@ -251,30 +241,92 @@ export function TopChoice() {
 export function Testimonials() {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+    const [message, setMessage] = useState("");
+    const [reviewForm, setReviewForm] = useState({
+        guestName: "",
+        rating: 5,
+        body: "",
+    });
+
+    const fetchReviews = async () => {
+        setLoading(true);
+        const { data, error } = await supabase
+            .from("reviews")
+            .select(`
+                id,
+                guest_name,
+                rating,
+                body,
+                created_at,
+                profiles (name)
+            `)
+            .eq("review_type", "general")
+            .order("created_at", { ascending: false })
+            .limit(6);
+
+        if (!error && data) {
+            setReviews(data);
+        }
+
+        setLoading(false);
+    };
 
     useEffect(() => {
-        const fetchReviews = async () => {
-            const { data, error } = await supabase
-                .from("reviews")
-                .select(`
-                    id,
-                    rating,
-                    body,
-                    created_at,
-                    profiles (name)
-                `)
-                .order("created_at", { ascending: false })
-                .limit(3);
-
-            if (!error && data) {
-                setReviews(data);
-            }
-
-            setLoading(false);
-        };
-
         fetchReviews();
     }, []);
+
+    const handleReviewChange = (e) => {
+        const { name, value } = e.target;
+        setReviewForm((current) => ({
+            ...current,
+            [name]: name === "rating" ? Number(value) : value,
+        }));
+    };
+
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        setMessage("");
+
+        const guestName = reviewForm.guestName.trim();
+        const body = reviewForm.body.trim();
+
+        if (guestName.length < 2) {
+            setMessage("Please enter your name.");
+            return;
+        }
+
+        if (body.length < 3) {
+            setMessage("Please write a short review.");
+            return;
+        }
+
+        setSubmitting(true);
+
+        const { data: { user } } = await supabase.auth.getUser();
+        const { error } = await supabase
+            .from("reviews")
+            .insert({
+                user_id: user?.id || null,
+                vehicle_id: null,
+                guest_name: guestName,
+                review_type: "general",
+                rating: reviewForm.rating,
+                body,
+                is_verified: false,
+            });
+
+        if (error) {
+            setMessage(error.message);
+            setSubmitting(false);
+            return;
+        }
+
+        setReviewForm({ guestName: "", rating: 5, body: "" });
+        setMessage("Thanks for sharing your review.");
+        await fetchReviews();
+        setSubmitting(false);
+    };
 
     return (
         <section className="testimonials">
@@ -283,6 +335,49 @@ export function Testimonials() {
                 <p className="section-sub center">
                     Discover why travelers choose our rental services.
                 </p>
+
+                <form className="home-review-form" onSubmit={handleReviewSubmit}>
+                    <div className="home-review-fields">
+                        <input
+                            type="text"
+                            name="guestName"
+                            value={reviewForm.guestName}
+                            onChange={handleReviewChange}
+                            placeholder="Your name"
+                            maxLength="80"
+                            required
+                        />
+                        <select
+                            name="rating"
+                            value={reviewForm.rating}
+                            onChange={handleReviewChange}
+                            aria-label="Rating"
+                        >
+                            <option value={5}>5 Stars</option>
+                            <option value={4}>4 Stars</option>
+                            <option value={3}>3 Stars</option>
+                            <option value={2}>2 Stars</option>
+                            <option value={1}>1 Star</option>
+                        </select>
+                    </div>
+
+                    <textarea
+                        name="body"
+                        value={reviewForm.body}
+                        onChange={handleReviewChange}
+                        placeholder="Share your rental experience..."
+                        rows="4"
+                        maxLength="1000"
+                        required
+                    />
+
+                    <div className="home-review-actions">
+                        <button type="submit" disabled={submitting}>
+                            {submitting ? "Submitting..." : "Submit Review"}
+                        </button>
+                        {message && <span>{message}</span>}
+                    </div>
+                </form>
 
                 <div className="testimonial-grid">
                     {loading ? (
@@ -298,13 +393,13 @@ export function Testimonials() {
                             <div className="testimonial-card" key={review.id}>
                                 <div className="testimonial-top">
                                     <div className="avatar">
-                                        {review.profiles?.name
-                                            ? review.profiles.name.charAt(0).toUpperCase()
-                                            : "U"}
+                                        {(review.guest_name || review.profiles?.name || "U")
+                                            .charAt(0)
+                                            .toUpperCase()}
                                     </div>
 
                                     <div className="testimonial-info">
-                                        <h4>{review.profiles?.name || "Anonymous User"}</h4>
+                                        <h4>{review.guest_name || review.profiles?.name || "Anonymous User"}</h4>
                                     </div>
                                 </div>
 

@@ -1,5 +1,3 @@
-// src/pages/KhaltiCallbackPage.jsx
-
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
@@ -31,9 +29,7 @@ export default function KhaltiCallbackPage() {
             try {
                 const res = await fetch(`${BACKEND_URL}/api/khalti/verify`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ pidx }),
                 });
 
@@ -61,7 +57,14 @@ export default function KhaltiCallbackPage() {
                     })
                     .eq("id", data.booking_id);
 
-                if (dbError) throw dbError;
+                if (dbError) {
+                    console.warn(
+                        "Frontend booking update failed after backend verification. The backend update may already have succeeded.",
+                        dbError
+                    );
+                }
+
+                if (data.warning) console.warn(data.warning);
 
                 setMessage("Payment verified! Your booking is confirmed. Redirecting...");
 
@@ -78,26 +81,12 @@ export default function KhaltiCallbackPage() {
     }, [searchParams, navigate]);
 
     return (
-        <div
-            style={{
-                padding: "120px 24px",
-                textAlign: "center",
-                fontFamily: "sans-serif",
-            }}
-        >
+        <div style={{ padding: "120px 24px", textAlign: "center", fontFamily: "sans-serif" }}>
             {error ? (
                 <>
                     <h2 style={{ color: "#e53e3e" }}>Payment Error</h2>
                     <p>{error}</p>
-
-                    <button
-                        onClick={() => navigate("/")}
-                        style={{
-                            marginTop: 16,
-                            padding: "10px 24px",
-                            cursor: "pointer",
-                        }}
-                    >
+                    <button onClick={() => navigate("/")} style={{ marginTop: 16, padding: "10px 24px", cursor: "pointer" }}>
                         Return Home
                     </button>
                 </>
