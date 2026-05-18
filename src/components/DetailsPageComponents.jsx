@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { 
-    LuStar, LuBattery, LuUsers, LuTimer, LuZap, 
+import {
+    LuStar, LuBattery, LuUsers, LuTimer, LuZap,
     LuUser, LuCircleCheck
 } from "react-icons/lu";
 import { Link } from "react-router-dom";
@@ -16,7 +16,7 @@ export function DetailsHero({ vehicle }) {
                 <div className="breadcrumb">
                     <Link to="/listing">Vehicles</Link> / <span>{vehicle?.name}</span>
                 </div>
-                
+
                 <div className="details-layout">
                     <div className="details-gallery">
                         <div className="gallery-main">
@@ -84,7 +84,7 @@ export function DetailsContent({ vehicle }) {
     const [canReview, setCanReview] = useState(false);
     const [pickupDate, setPickupDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
-    
+
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [newReview, setNewReview] = useState({ rating: 5, body: "" });
 
@@ -99,23 +99,12 @@ export function DetailsContent({ vehicle }) {
                 .select('id, rating, body, created_at, profiles (name)')
                 .eq('vehicle_id', vehicle.id)
                 .order('created_at', { ascending: false });
-                
+
             if (reviewsData) {
                 setReviews(reviewsData);
             }
 
-            if (user) {
-                const { data: bookingData } = await supabase
-                    .from('bookings')
-                    .select('id')
-                    .eq('vehicle_id', vehicle.id)
-                    .eq('user_id', user.id)
-                    .limit(1);
-                
-                if (bookingData && bookingData.length > 0) {
-                    setCanReview(true);
-                }
-            }
+            setCanReview(!!user);
         };
 
         fetchDetails();
@@ -123,7 +112,7 @@ export function DetailsContent({ vehicle }) {
 
     const totalReviews = reviews.length;
     const averageRating = totalReviews > 0 ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews).toFixed(1) : 0;
-    
+
     const getStarPct = (star) => {
         if (totalReviews === 0) return 0;
         const count = reviews.filter(r => r.rating === star).length;
@@ -133,7 +122,7 @@ export function DetailsContent({ vehicle }) {
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
         if (!user || !vehicle) return;
-        
+
         const { error } = await supabase
             .from('reviews')
             .insert({
@@ -143,7 +132,7 @@ export function DetailsContent({ vehicle }) {
                 body: newReview.body,
                 is_verified: true
             });
-            
+
         if (!error) {
             setShowReviewForm(false);
             setNewReview({ rating: 5, body: "" });
@@ -172,13 +161,22 @@ export function DetailsContent({ vehicle }) {
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <h2>Guest Experiences</h2>
                         {canReview && (
-                            <button 
-                                className="btn btn-primary" 
+                            <button
+                                className="btn btn-primary"
                                 style={{ padding: "8px 16px", borderRadius: "8px", border: "none", backgroundColor: "#3b82f6", color: "#fff", cursor: "pointer" }}
                                 onClick={() => setShowReviewForm(!showReviewForm)}
                             >
                                 Write Review
                             </button>
+                        )}
+                        {!user && (
+                            <Link
+                                to="/signin"
+                                className="btn btn-primary"
+                                style={{ padding: "8px 16px", borderRadius: "8px", border: "none", backgroundColor: "#3b82f6", color: "#fff", cursor: "pointer", textDecoration: "none" }}
+                            >
+                                Login to Review
+                            </Link>
                         )}
                     </div>
 
@@ -188,9 +186,9 @@ export function DetailsContent({ vehicle }) {
                             <form onSubmit={handleReviewSubmit}>
                                 <div style={{ marginBottom: "12px" }}>
                                     <label style={{ display: "block", marginBottom: "4px" }}>Rating</label>
-                                    <select 
-                                        value={newReview.rating} 
-                                        onChange={(e) => setNewReview({...newReview, rating: parseInt(e.target.value)})}
+                                    <select
+                                        value={newReview.rating}
+                                        onChange={(e) => setNewReview({ ...newReview, rating: parseInt(e.target.value) })}
                                         style={{ padding: "8px", borderRadius: "6px", border: "1px solid #d1d5db", width: "100%" }}
                                     >
                                         <option value={5}>5 Stars - Excellent</option>
@@ -202,10 +200,10 @@ export function DetailsContent({ vehicle }) {
                                 </div>
                                 <div style={{ marginBottom: "12px" }}>
                                     <label style={{ display: "block", marginBottom: "4px" }}>Review</label>
-                                    <textarea 
-                                        rows="4" 
+                                    <textarea
+                                        rows="4"
                                         value={newReview.body}
-                                        onChange={(e) => setNewReview({...newReview, body: e.target.value})}
+                                        onChange={(e) => setNewReview({ ...newReview, body: e.target.value })}
                                         required
                                         style={{ padding: "8px", borderRadius: "6px", border: "1px solid #d1d5db", width: "100%" }}
                                         placeholder="Share your experience with this vehicle..."
@@ -273,12 +271,12 @@ export function DetailsContent({ vehicle }) {
             <div className="details-booking-widget">
                 <div className="booking-card">
                     <h3>Availability</h3>
-                    
+
                     <div className="date-picker-group">
                         <label className="spec-label">PICKUP DATE</label>
                         <div className="date-input" style={{ display: 'flex', alignItems: 'center' }}>
-                            <input 
-                                type="date" 
+                            <input
+                                type="date"
                                 value={pickupDate}
                                 onChange={(e) => setPickupDate(e.target.value)}
                                 min={today}
@@ -290,8 +288,8 @@ export function DetailsContent({ vehicle }) {
                     <div className="date-picker-group">
                         <label className="spec-label">RETURN DATE</label>
                         <div className="date-input" style={{ display: 'flex', alignItems: 'center' }}>
-                            <input 
-                                type="date" 
+                            <input
+                                type="date"
                                 value={returnDate}
                                 onChange={(e) => setReturnDate(e.target.value)}
                                 min={pickupDate ? new Date(new Date(pickupDate).getTime() + 86400000).toISOString().split('T')[0] : tomorrow}

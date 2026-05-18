@@ -35,6 +35,7 @@ export function BookingContent() {
     const [vehicle, setVehicle] = useState(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [availabilityError, setAvailabilityError] = useState("");
 
     const [formData, setFormData] = useState({
         fullName: "",
@@ -107,17 +108,48 @@ export function BookingContent() {
     const deposit = 500;
     const total = subtotal + taxes + deposit;
 
+    const checkVehicleAvailability = async () => {
+        if (!id || !formData.pickupDate || !formData.returnDate) return true;
+
+        const { data, error } = await supabase
+            .from('bookings')
+            .select('id, pickup_date, return_date, status')
+            .eq('vehicle_id', id)
+            .in('status', ['pending', 'confirmed', 'active'])
+            .lte('pickup_date', formData.returnDate)
+            .gte('return_date', formData.pickupDate)
+            .limit(1);
+
+        if (error) throw error;
+
+        return !data || data.length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
+        setAvailabilityError("");
 
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+            if (userError || !user) {
+                alert("Please login before booking a vehicle.");
+                navigate("/signin", { state: { from: `/booking/${id}` } });
+                return;
+            }
+
+            const isAvailable = await checkVehicleAvailability();
+            if (!isAvailable) {
+                setAvailabilityError("This vehicle is already booked for the selected dates. Please choose another vehicle or different dates.");
+                setSubmitting(false);
+                return;
+            }
 
             // FIX: include subtotal, taxes, and deposit as separate columns
             // so the bookings table NOT NULL constraints are satisfied
             const bookingData = {
-                user_id: user?.id || null,
+                user_id: user.id,
                 vehicle_id: id || null,
                 full_name: formData.fullName,
                 email: formData.email,
@@ -134,12 +166,19 @@ export function BookingContent() {
                 payment_status: 'unpaid',
             };
 
-            console.log("Holding booking data in local state:", bookingData);
-            navigate('/payment', { state: { bookingData, vehicle } });
+            const { data: insertedBooking, error: insertError } = await supabase
+                .from('bookings')
+                .insert([bookingData])
+                .select()
+                .single();
+
+            if (insertError) throw insertError;
+
+            navigate(`/payment?booking_id=${insertedBooking.id}`, { state: { vehicle } });
 
         } catch (err) {
             console.error("Unexpected error:", err);
-            alert("An unexpected error occurred.");
+            alert(err.message || "An unexpected error occurred.");
             setSubmitting(false);
         }
     };
@@ -184,6 +223,19 @@ export function BookingContent() {
                             </ul>
                         </div>
                     </div>
+                    {availabilityError && (
+                        <div style={{
+                            marginTop: "16px",
+                            padding: "12px 14px",
+                            borderRadius: "10px",
+                            background: "#fee2e2",
+                            border: "1px solid #fecaca",
+                            color: "#991b1b",
+                            fontWeight: 600,
+                        }}>
+                            {availabilityError}
+                        </div>
+                    )}
                 </div>
 
                 {/* Personal Details Card */}

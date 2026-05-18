@@ -60,6 +60,32 @@ export default function PaymentPage() {
         fetchBooking();
     }, [bookingId, heldBooking, heldVehicle]);
 
+    const assertVehicleAvailable = async (bookingToCheck) => {
+        if (!bookingToCheck?.vehicle_id || !bookingToCheck?.pickup_date || !bookingToCheck?.return_date) {
+            return;
+        }
+
+        let query = supabase
+            .from("bookings")
+            .select("id")
+            .eq("vehicle_id", bookingToCheck.vehicle_id)
+            .in("status", ["pending", "confirmed", "active"])
+            .lte("pickup_date", bookingToCheck.return_date)
+            .gte("return_date", bookingToCheck.pickup_date)
+            .limit(1);
+
+        if (bookingToCheck.id) {
+            query = query.neq("id", bookingToCheck.id);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            throw new Error("This vehicle is already booked for the selected dates. Please choose another vehicle or different dates.");
+        }
+    };
+
     const handlePayment = async (e) => {
         if (e) e.preventDefault();
 
@@ -71,6 +97,8 @@ export default function PaymentPage() {
         setProcessing(true);
 
         try {
+            await assertVehicleAvailable(booking);
+
             if (method === "card") {
                 const form = document.getElementById("cardPaymentForm");
 
@@ -83,13 +111,13 @@ export default function PaymentPage() {
                 if (heldBooking) {
                     const { error } = await supabase
                         .from("bookings")
-                        .insert([{ ...heldBooking, status: "confirmed" }]);
+                        .insert([{ ...heldBooking, status: "confirmed", payment_status: "paid" }]);
 
                     if (error) throw error;
                 } else {
                     const { error } = await supabase
                         .from("bookings")
-                        .update({ status: "confirmed" })
+                        .update({ status: "confirmed", payment_status: "paid" })
                         .eq("id", booking.id);
 
                     if (error) throw error;

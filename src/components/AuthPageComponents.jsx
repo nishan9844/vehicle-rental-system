@@ -3,6 +3,8 @@ import { LuApple, LuUser, LuAtSign, LuLock } from "react-icons/lu";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
+const ADMIN_URL = process.env.REACT_APP_ADMIN_URL || "http://localhost:5173";
+
 export function AuthImage({ imageUrl }) {
     return (
         <div className="auth-image">
@@ -24,7 +26,6 @@ export function SignInForm() {
         setLoading(true);
 
         try {
-            // Step 1: Sign in with Supabase Auth
             const { data, error: authError } = await supabase.auth.signInWithPassword({
                 email,
                 password,
@@ -34,20 +35,18 @@ export function SignInForm() {
 
             const userId = data.user.id;
 
-            // Step 2: Check role in profiles table
             const { data: profile, error: profileError } = await supabase
                 .from("profiles")
                 .select("role")
                 .eq("id", userId)
                 .single();
 
-            // If profile doesn't exist yet, just treat as regular user
             if (profileError && profileError.code !== "PGRST116") {
                 throw new Error("Could not fetch user profile.");
             }
 
             if (profile?.role === "admin") {
-                window.location.href = "http://localhost:5173";
+                window.location.href = ADMIN_URL;
             } else {
                 navigate("/");
             }
@@ -94,10 +93,11 @@ export function SignInForm() {
                 <div className="form-group">
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <label>PASSWORD</label>
-                        <button type="button" className="text-primary" style={{ fontSize: "11px", fontWeight: "600", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Forgot?</button>                    </div>
+                        <button type="button" className="text-primary" style={{ fontSize: "11px", fontWeight: "600", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Forgot?</button>
+                    </div>
                     <div className="input-with-icon">
                         <input
-                            type="password" name="password" placeholder="••••••••"
+                            type="password" name="password" placeholder="Password"
                             value={password} onChange={(e) => setPassword(e.target.value)} required
                         />
                     </div>
@@ -147,7 +147,6 @@ export function SignUpForm() {
             const { data: userData, error: authError } = await supabase.auth.signUp({ email, password });
             if (authError) throw new Error(authError.message);
 
-            // upsert instead of insert — safe if account already exists
             const { error: profileError } = await supabase
                 .from("profiles")
                 .upsert([{ id: userData.user.id, name: fullName, email: email, role: "user" }]);
@@ -215,7 +214,7 @@ export function SignUpForm() {
                     <label>SECURE PASSWORD</label>
                     <div className="input-with-icon">
                         <LuLock className="icon" />
-                        <input type="password" name="password" placeholder="••••••••" style={{ paddingLeft: "44px" }}
+                        <input type="password" name="password" placeholder="Password" style={{ paddingLeft: "44px" }}
                             value={password} onChange={(e) => setPassword(e.target.value)} required />
                     </div>
                 </div>

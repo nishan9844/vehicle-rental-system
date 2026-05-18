@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight, FaStar, FaSearch } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaStar, FaSearch, FaComments } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import ChatbotModal from "./ChatbotModal";
@@ -73,26 +73,16 @@ export function SearchBar() {
                     Browse All Vehicles
                 </Link>
 
-                <button
-                    type="button"
-                    onClick={() => setChatOpen(true)}
-                    className="search-btn"
-                    style={{
-                        border: "none",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyItems: "center",
-                        padding: "16px 32px",
-                        fontSize: "18px",
-                        borderRadius: "50px",
-                        backgroundColor: "#3b82f6",
-                        color: "#fff",
-                        cursor: "pointer",
-                    }}
-                >
-                    Ask Agents
-                </button>
             </div>
+
+            <button
+                type="button"
+                onClick={() => setChatOpen(true)}
+                className="chatbot-floating-button"
+                aria-label="Open rental support chat"
+            >
+                <FaComments />
+            </button>
 
             <ChatbotModal open={chatOpen} onClose={() => setChatOpen(false)} />
         </>
@@ -110,7 +100,7 @@ export function VehicleCategories() {
 
                 <div className="category-grid">
                     <Link
-                        to="/listing"
+                        to="/listing?vehicleType=4%20Wheeler"
                         className="category-item"
                         style={{ textDecoration: "none", color: "inherit" }}
                     >
@@ -123,7 +113,7 @@ export function VehicleCategories() {
                     </Link>
 
                     <Link
-                        to="/listing"
+                        to="/listing?vehicleType=2%20Wheeler"
                         className="category-item"
                         style={{ textDecoration: "none", color: "inherit" }}
                     >
@@ -136,7 +126,7 @@ export function VehicleCategories() {
                     </Link>
 
                     <Link
-                        to="/listing"
+                        to="/listing?vehicleType=EV"
                         className="category-item"
                         style={{ textDecoration: "none", color: "inherit" }}
                     >

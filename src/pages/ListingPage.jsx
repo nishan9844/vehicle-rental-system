@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { FilterSidebar, CarCard } from '../components/ListingPageComponents';
@@ -54,6 +55,8 @@ const fetchBrands = async () => {
 
 // ── Page Component ────────────────────────────────────────────────────────────
 const ListingPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialVehicleType = searchParams.get('vehicleType') || 'All';
   const [vehicles, setVehicles] = useState([]);
   const [allBrands, setAllBrands] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +64,7 @@ const ListingPage = () => {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [maxPrice, setMaxPrice] = useState(30000);
   const [transmission, setTransmission] = useState('All');
-  const [vehicleType, setVehicleType] = useState('All');
+  const [vehicleType, setVehicleType] = useState(initialVehicleType);
   const [availableOnly, setAvailableOnly] = useState(false);
   const [sort, setSort] = useState('Newest');
 
@@ -72,6 +75,11 @@ const ListingPage = () => {
   useEffect(() => {
     fetchBrands().then(setAllBrands).catch(console.error);
   }, []);
+
+  useEffect(() => {
+    const typeFromUrl = searchParams.get('vehicleType') || 'All';
+    setVehicleType(typeFromUrl);
+  }, [searchParams]);
 
   useEffect(() => {
     setLoading(true);
@@ -108,11 +116,22 @@ const ListingPage = () => {
     );
   };
 
+  const handleVehicleTypeChange = (nextType) => {
+    setVehicleType(nextType);
+
+    if (nextType === 'All') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ vehicleType: nextType });
+    }
+  };
+
   const clearFilters = () => {
     setSelectedBrands([]);
     setMaxPrice(30000);
     setTransmission('All');
     setVehicleType('All');
+    setSearchParams({});
     setAvailableOnly(false);
     setSearch('');
     setSort('Newest');
@@ -152,7 +171,7 @@ const ListingPage = () => {
             transmission={transmission}
             onTransmissionChange={setTransmission}
             vehicleType={vehicleType}
-            onVehicleTypeChange={setVehicleType}
+            onVehicleTypeChange={handleVehicleTypeChange}
             availableOnly={availableOnly}
             onAvailableOnlyChange={setAvailableOnly}
             hasActiveFilters={hasActiveFilters}
