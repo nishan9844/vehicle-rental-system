@@ -1,0 +1,183 @@
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--primary-blue);
+  color: white;
+  border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-icon:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.navbar-brand svg {
+  width: 32px;
+  height: 32px;
+  color: var(--primary-blue);
+}
+
+.navbar-nav {
+  display: flex;
+  gap: 32px;
+}
+
+.navbar-nav a {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-dark);
+  text-transform: capitalize;
+}
+
+.navbar-nav a:hover {
+  color: var(--primary-blue);
+}
+
+.navbar-actions {
+  display: flex;
+  gap: 16px;
+}
+
+/* Footer */
+.footer {
+  background-color: transparent;
+  padding: 80px 0 40px;
+  margin-top: 80px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.footer-brand {
+  margin-bottom: 24px;
+}
+
+.footer-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 16px;
+  max-width: 250px;
+}
+
+.footer-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.footer-links a:hover {
+  color: var(--primary-blue);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+}
+
+.footer-copy {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 16px;
+}
+
+.footer-social a {
+  color: var(--text-muted);
+}
+
+.footer-social a:hover {
+  color: var(--primary-blue);
+}
+
+/* Card Badge */
+.badge {
+  background: var(--primary-blue);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}

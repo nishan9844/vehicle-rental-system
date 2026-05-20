@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.3da18461.css",
+    "main.js": "/static/js/main.815d627c.js",
+    "static/media/login.png": "/static/media/login.e46b3fdafeedefe72336.png",
+    "static/media/bullet_bike_1774791285776.png": "/static/media/bullet_bike_1774791285776.91be678e6ed70e3680fb.png",
+    "static/media/bmw_x7_1774791305841.png": "/static/media/bmw_x7_1774791305841.a8d04036e4a4334c9229.png",
+    "static/media/tesla_model_s_1774791127857.png": "/static/media/tesla_model_s_1774791127857.321693928387abcc9ffe.png",
+    "static/media/signup.png": "/static/media/signup.184d372267d22ee350eb.png",
+    "static/media/HeroSection.png": "/static/media/HeroSection.8cb634a306fd8b2810a9.png",
+    "static/media/2wheeler.png": "/static/media/2wheeler.7767ad048d2ac9fe0940.png",
+    "static/media/4wheeler.png": "/static/media/4wheeler.b351c93deaaddc8381bb.png",
+    "static/media/ev.png": "/static/media/ev.1c584549e6828ada4667.png",
+    "static/media/khalti.jpg": "/static/media/khalti.d80301d58c2091c31347.jpg",
+    "static/media/esewa.png": "/static/media/esewa.9a378cbe1a48a0851a22.png",
+    "index.html": "/index.html",
+    "main.3da18461.css.map": "/static/css/main.3da18461.css.map",
+    "main.815d627c.js.map": "/static/js/main.815d627c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3da18461.css",
+    "static/js/main.815d627c.js"
+  ]
+}

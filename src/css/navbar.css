@@ -1,0 +1,353 @@
+.navbar {
+    background: white;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    z-index: 1001;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 48px;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #1e293b;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: #2563eb;
+}
+
+.nav-auth {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-login {
+    background: #f8fafc;
+    color: #2563eb;
+    border: 1px solid #2563eb;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+}
+
+.btn-login:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-signup {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+}
+
+.btn-signup:hover {
+    background: #1d4ed8;
+}
+
+/* User Profile Styles */
+.user-profile {
+    display: flex;
+    align-items: center;
+}
+
+.user-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.user-name:hover {
+    background: #eef4ff;
+    border-color: #bfdbfe;
+    color: #2563eb;
+}
+
+.user-icon {
+    font-size: 18px;
+    color: #2563eb;
+}
+
+.dropdown-chevron {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s;
+}
+
+.dropdown-chevron.open {
+    transform: rotate(180deg);
+}
+
+/* User Dropdown */
+.user-dropdown-container {
+    position: relative;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 170px;
+    z-index: 1002;
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 16px;
+    color: #1e293b;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+    border: 0;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+}
+
+.dropdown-item:hover {
+    background: #f8fafc;
+    color: #2563eb;
+}
+
+.dropdown-button {
+    border-top: 1px solid #f1f5f9;
+    color: #dc2626;
+}
+
+.dropdown-button:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    gap: 6px;
+    z-index: 1001;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.hamburger:hover {
+    background: #f1f5f9;
+}
+
+.hamburger-line {
+    display: block;
+    width: 24px;
+    height: 2.5px;
+    background: #1e293b;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.hamburger.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Mobile Overlay */
+.nav-overlay {
+    display: none;
+}
+
+/* MOBILE RESPONSIVE - iPhone 17 Pro Max (430px) and general mobile */
+@media (max-width: 768px) {
+    .navbar {
+        height: 64px;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        z-index: 999;
+        animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        max-width: 85vw;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 100px 32px 40px;
+        gap: 0;
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+        transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .nav-menu.open {
+        right: 0;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+        margin-bottom: 32px;
+    }
+
+    .nav-links li {
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .nav-links li:last-child {
+        border-bottom: none;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 18px 0;
+        font-size: 17px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .nav-auth {
+        flex-direction: column;
+        width: 100%;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .btn-login,
+    .btn-signup {
+        width: auto;
+        text-align: left;
+        padding: 10px 24px;
+        font-size: 15px;
+    }
+
+    .user-profile {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .user-name {
+        padding: 10px 14px;
+        font-size: 16px;
+    }
+
+    .user-dropdown {
+        position: static;
+        margin-top: 8px;
+        min-width: 220px;
+    }
+}
