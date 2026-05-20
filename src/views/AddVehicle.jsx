@@ -1,0 +1,51 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import VehicleForm from "../components/vehicles/VehicleForm";
+import { emptyVehicleForm } from "../components/vehicles/vehicleDefaults";
+import { createVehicle } from "../services/vehicleService";
+
+export default function AddVehicle() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState(emptyVehicleForm);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  function handleChange(event) {
+    const { name, value, type, checked } = event.target;
+    setFormData((current) => ({
+      ...current,
+      [name]: type === "checkbox" ? checked : value,
+      ...(name === "vehicle_type" ? { category: value } : {}),
+    }));
+    setError("");
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setSaving(true);
+    setError("");
+
+    try {
+      await createVehicle(formData);
+      navigate("/vehicles", {
+        state: { message: "Vehicle added successfully." },
+      });
+    } catch (err) {
+      setError(err.message || "Unable to add vehicle.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <VehicleForm
+      title="Add Vehicle"
+      submitLabel="Add Vehicle"
+      formData={formData}
+      onChange={handleChange}
+      onSubmit={handleSubmit}
+      saving={saving}
+      error={error}
+    />
+  );
+}
